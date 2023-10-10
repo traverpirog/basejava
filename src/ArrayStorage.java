@@ -33,6 +33,7 @@ public class ArrayStorage {
                 storage[i] = storage[countResumes - 1];
                 storage[countResumes - 1] = null;
                 countResumes--;
+                break;
             }
         }
     }
