@@ -8,7 +8,8 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private final int STORAGE_LIMIT = 10000;
+    private final Resume[] storage = new Resume[STORAGE_LIMIT];
     private int size;
 
     public void clear() {
@@ -17,60 +18,57 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (isResume(r.getUuid())) {
+        if (STORAGE_LIMIT < size) {
+            System.out.println("ERROR: storage переполнен");
+        } else if (findIndex(r.getUuid()) != -1) {
             System.out.println("ERROR: Резюме " + r.getUuid() + " уже существует!");
-            return;
-        }
-
-        if (storage.length > size) {
+        } else {
             storage[size] = r;
             size++;
-            return;
         }
-
-        System.out.println("ERROR: storage переполнен");
     }
 
     public void update(Resume r) {
-        if (!isResume(r.getUuid())) {
+        int index = findIndex(r.getUuid());
+        if (index == -1) {
             System.out.println("ERROR: Резюме " + r.getUuid() + " не найдено!");
-            return;
-        }
-
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(r.getUuid())) {
-                storage[i] = r;
-                break;
-            }
+        } else {
+            storage[index] = r;
         }
     }
 
     public Resume get(String uuid) {
-        if (!isResume(uuid)) {
-            System.out.println("ERROR: Резюме " + uuid + " не найдено!");
-            return null;
+        int index = findIndex(uuid);
+
+        if (index != -1) {
+            return storage[index];
         }
-        return Arrays.stream(storage).limit(size).filter(resume -> resume.getUuid().equals(uuid)).findFirst().get();
+
+        System.out.println("ERROR: Резюме " + uuid + " не найдено!");
+        return null;
     }
 
     public void delete(String uuid) {
-        if (!isResume(uuid)) {
-            System.out.println("ERROR: Резюме " + uuid + " не найдено!");
-            return;
-        }
+        int index = findIndex(uuid);
 
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                storage[i] = storage[size - 1];
-                storage[size - 1] = null;
-                size--;
-                break;
-            }
+        if (findIndex(uuid) == -1) {
+            System.out.println("ERROR: Резюме " + uuid + " не найдено!");
+        } else {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
         }
     }
 
-    private boolean isResume(String uuid) {
-        return Arrays.stream(storage).limit(size).anyMatch(resume1 -> uuid.equals(resume1.getUuid()));
+    private int findIndex(String uuid) {
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     /**
