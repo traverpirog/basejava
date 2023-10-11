@@ -39,18 +39,15 @@ public class ArrayStorage {
 
     public Resume get(String uuid) {
         int index = findIndex(uuid);
-
         if (index != -1) {
             return storage[index];
         }
-
         System.out.println("ERROR: Резюме " + uuid + " не найдено!");
         return null;
     }
 
     public void delete(String uuid) {
         int index = findIndex(uuid);
-
         if (findIndex(uuid) == -1) {
             System.out.println("ERROR: Резюме " + uuid + " не найдено!");
         } else {
@@ -75,7 +72,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        return Arrays.stream(storage).limit(size).toArray(Resume[]::new);
+        return Arrays.copyOf(storage, size);
     }
 
     public int size() {
