@@ -1,9 +1,24 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.model.Resume;
+
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
+    @Override
+    public void save(Resume r) {
+        int index = findIndex(r.getUuid());
+        if (STORAGE_LIMIT < size) {
+            System.out.println("ERROR: storage переполнен");
+        } else if (index != -1) {
+            System.out.println("ERROR: Резюме " + r.getUuid() + " уже существует!");
+        } else {
+            storage[size] = r;
+            size++;
+        }
+    }
+
     @Override
     public void delete(String uuid) {
         int index = findIndex(uuid);

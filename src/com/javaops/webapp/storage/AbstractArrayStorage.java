@@ -16,19 +16,6 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
-    public void save(Resume r) {
-        int index = findIndex(r.getUuid());
-        if (STORAGE_LIMIT < size) {
-            System.out.println("ERROR: storage переполнен");
-        } else if (index > -1) {
-            System.out.println("ERROR: Резюме " + r.getUuid() + " уже существует!");
-        } else {
-            storage[size] = r;
-            size++;
-        }
-    }
-
-    @Override
     public void update(Resume r) {
         int index = findIndex(r.getUuid());
         if (index == -1) {

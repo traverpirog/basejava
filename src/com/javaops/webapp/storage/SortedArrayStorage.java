@@ -6,6 +6,21 @@ import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
+    public void save(Resume r) {
+        int index = findIndex(r.getUuid());
+        if (STORAGE_LIMIT < size) {
+            System.out.println("ERROR: storage переполнен");
+        } else if (index > -1) {
+            System.out.println("ERROR: Резюме " + r.getUuid() + " уже существует!");
+        } else {
+            index = -index - 1;
+            System.arraycopy(storage, index, storage, index + 1, size - index);
+            storage[index] = r;
+            size++;
+        }
+    }
+
+    @Override
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index == -1) {
