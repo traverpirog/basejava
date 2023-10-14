@@ -10,13 +10,13 @@ public abstract class AbstractArrayStorage implements Storage {
     protected int size;
 
     @Override
-    public void clear() {
+    public final void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
     @Override
-    public void save(Resume r) {
+    public final void save(Resume r) {
         int index = findIndex(r.getUuid());
         if (STORAGE_LIMIT < size) {
             System.out.println("ERROR: storage переполнен");
@@ -32,7 +32,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public abstract int saveModification(int index);
 
     @Override
-    public void update(Resume r) {
+    public final void update(Resume r) {
         int index = findIndex(r.getUuid());
         if (index == -1) {
             System.out.println("ERROR: Резюме " + r.getUuid() + " не найдено!");
@@ -42,7 +42,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
-    public void delete(String uuid) {
+    public final void delete(String uuid) {
         int index = findIndex(uuid);
         if (index == -1) {
             System.out.println("ERROR: Резюме " + uuid + " не найдено!");
@@ -55,7 +55,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public abstract void deleteModification(int index);
 
     @Override
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         int index = findIndex(uuid);
         if (index != -1) {
             return storage[index];
@@ -65,12 +65,12 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
-    public Resume[] getAll() {
+    public final Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
 
     @Override
-    public int size() {
+    public final int size() {
         return size;
     }
 
