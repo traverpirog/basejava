@@ -2,12 +2,12 @@ package com.javaops.webapp.storage;
 
 public class ArrayStorage extends AbstractArrayStorage {
     @Override
-    public int saveModification(int index) {
+    public int saveResume(int index) {
         return size;
     }
 
     @Override
-    public void deleteModification(int index) {
+    public void deleteResume(int index) {
         storage[index] = storage[size - 1];
         storage[size - 1] = null;
     }

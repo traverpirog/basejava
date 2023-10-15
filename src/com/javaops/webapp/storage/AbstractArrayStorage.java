@@ -23,13 +23,13 @@ public abstract class AbstractArrayStorage implements Storage {
         } else if (index > -1) {
             System.out.println("ERROR: Резюме " + r.getUuid() + " уже существует!");
         } else {
-            index = saveModification(index);
+            index = saveResume(index);
             storage[index] = r;
             size++;
         }
     }
 
-    public abstract int saveModification(int index);
+    public abstract int saveResume(int index);
 
     @Override
     public final void update(Resume r) {
@@ -47,12 +47,12 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index == -1) {
             System.out.println("ERROR: Резюме " + uuid + " не найдено!");
         } else {
-            deleteModification(index);
+            deleteResume(index);
             size--;
         }
     }
 
-    public abstract void deleteModification(int index);
+    public abstract void deleteResume(int index);
 
     @Override
     public final Resume get(String uuid) {
