@@ -28,8 +28,6 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public abstract void saveResume(int index, Resume resume);
-
     @Override
     public final void update(Resume r) {
         int index = findIndex(r.getUuid());
@@ -51,8 +49,6 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public abstract void deleteResume(int index);
-
     @Override
     public final Resume get(String uuid) {
         int index = findIndex(uuid);
@@ -72,6 +68,10 @@ public abstract class AbstractArrayStorage implements Storage {
     public final int size() {
         return size;
     }
+
+    public abstract void saveResume(int index, Resume resume);
+
+    public abstract void deleteResume(int index);
 
     protected abstract int findIndex(String uuid);
 }
