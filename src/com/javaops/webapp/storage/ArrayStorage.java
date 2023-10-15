@@ -1,9 +1,11 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.model.Resume;
+
 public class ArrayStorage extends AbstractArrayStorage {
     @Override
-    public int saveResume(int index) {
-        return size;
+    public void saveResume(int index, Resume r) {
+        storage[size] = r;
     }
 
     @Override
