@@ -15,6 +15,6 @@ public class MainReflection {
         System.out.println(field.get(resume));
         field.set(resume, "asdkljasdfklasjdfklj");
         System.out.println(field.get(resume));
-        System.out.println(Resume.class.getMethod("toString").invoke(new Resume()));
+        System.out.println(Resume.class.getDeclaredMethod("toString").invoke(resume));
     }
 }

@@ -1,50 +1,62 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.exception.ExistStorageException;
+import com.javaops.webapp.exception.NotExistStorageException;
 import com.javaops.webapp.model.Resume;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractArrayStorageTest {
-    private final Storage storage = new ArrayStorage();
-    private final String UUID_1 = "uuid1";
-    private final String UUID_2 = "uuid2";
-    private final String UUID_3 = "uuid3";
+    private final Storage storage;
 
-    @org.junit.Before
-    public void setUp() throws Exception {
+    public AbstractArrayStorageTest(Storage storage) {
+        this.storage = storage;
+    }
+
+    @BeforeEach
+    public void setUp() throws ExistStorageException {
         storage.clear();
-        storage.save(new Resume(UUID_1));
-        storage.save(new Resume(UUID_2));
-        storage.save(new Resume(UUID_3));
+        storage.save(new Resume("uuid1"));
+        storage.save(new Resume());
+        storage.save(new Resume());
     }
 
-    @org.junit.Test
+    @Test
     public void clear() {
+        storage.clear();
+        assertEquals(0, storage.size());
     }
 
-    @org.junit.Test
-    public void save() {
+    @Test
+    public void save() throws ExistStorageException {
+        storage.save(new Resume());
+        assertEquals(4, storage.size());
     }
 
-    @org.junit.Test
-    public void update() {
+    @Test
+    public void update() throws NotExistStorageException {
+
     }
 
-    @org.junit.Test
-    public void delete() {
+    @Test
+    public void delete() throws NotExistStorageException {
+        storage.delete("uuid1");
+        assertEquals(2, storage.size());
     }
 
-    @org.junit.Test
+    @Test
     public void get() {
     }
 
-    @org.junit.Test
+    @Test
     public void getAll() {
     }
 
-    @org.junit.Test
+    @Test
     public void size() {
-        Assert.assertEquals(3, storage.size());
+        Assertions.assertEquals(3, storage.size());
     }
 }
