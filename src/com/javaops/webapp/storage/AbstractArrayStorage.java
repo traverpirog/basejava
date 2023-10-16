@@ -1,5 +1,8 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.exception.ExistStorageException;
+import com.javaops.webapp.exception.NotExistStorageException;
+import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -19,9 +22,9 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void save(Resume r) {
         int index = findIndex(r.getUuid());
         if (STORAGE_LIMIT < size) {
-            System.out.println("ERROR: storage переполнен");
+            throw new StorageException(r.getUuid(), "ERROR: storage переполнен");
         } else if (index > -1) {
-            System.out.println("ERROR: Резюме " + r.getUuid() + " уже существует!");
+            throw new ExistStorageException(r.getUuid());
         } else {
             saveResume(index, r);
             size++;
@@ -31,8 +34,8 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final void update(Resume r) {
         int index = findIndex(r.getUuid());
-        if (index == -1) {
-            System.out.println("ERROR: Резюме " + r.getUuid() + " не найдено!");
+        if (index < 0) {
+            throw new NotExistStorageException(r.getUuid());
         } else {
             storage[index] = r;
         }
@@ -41,8 +44,8 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final void delete(String uuid) {
         int index = findIndex(uuid);
-        if (index == -1) {
-            System.out.println("ERROR: Резюме " + uuid + " не найдено!");
+        if (index < 0) {
+            throw new NotExistStorageException(uuid);
         } else {
             deleteResume(index);
             size--;
@@ -52,11 +55,10 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final Resume get(String uuid) {
         int index = findIndex(uuid);
-        if (index != -1) {
+        if (index > -1) {
             return storage[index];
         }
-        System.out.println("ERROR: Резюме " + uuid + " не найдено!");
-        return null;
+        throw new NotExistStorageException(uuid);
     }
 
     @Override
