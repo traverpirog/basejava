@@ -21,7 +21,7 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final void save(Resume r) {
         int index = findIndex(r.getUuid());
-        if (STORAGE_LIMIT < size) {
+        if (STORAGE_LIMIT == size) {
             throw new StorageException(r.getUuid(), "ERROR: storage переполнен");
         } else if (index > -1) {
             throw new ExistStorageException(r.getUuid());
