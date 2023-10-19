@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractArrayStorageTest {
     private final Storage STORAGE;
+    private final String UUID = "uuid";
     private final String UUID1 = "uuid1";
     private final String UUID2 = "uuid2";
     private final String UUID3 = "uuid3";
     private final String UUID_NOT_EXIST = "dummy";
+    private final Resume RESUME = new Resume(UUID);
     private final Resume RESUME1 = new Resume(UUID1);
     private final Resume RESUME2 = new Resume(UUID2);
     private final Resume RESUME3 = new Resume(UUID3);
@@ -42,10 +44,9 @@ public class AbstractArrayStorageTest {
 
     @Test
     public void save() {
-        STORAGE.clear();
-        STORAGE.save(RESUME1);
-        assertSize(1);
-        assertGet(RESUME1);
+        STORAGE.save(RESUME);
+        assertSize(4);
+        assertGet(RESUME);
     }
 
     @Test
@@ -64,17 +65,13 @@ public class AbstractArrayStorageTest {
             for (int i = 0; i < STORAGE_LIMIT; i++) {
                 Resume resume = new Resume();
                 STORAGE.save(resume);
-                if (STORAGE_LIMIT < STORAGE.size()) {
-                    fail("Переполнение произошло раньше времени");
-                }
             }
-            STORAGE.save(RESUME1);
         } catch (StorageException e) {
-            assertThrows(StorageException.class, () -> {
-                throw new StorageException(RESUME1.getUuid(), "storage переполнен");
-            });
+            fail("Переполнение произошло раньше времени");
         }
-
+        assertThrows(StorageException.class, () -> {
+            STORAGE.save(RESUME);
+        });
     }
 
     @Test
