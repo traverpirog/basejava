@@ -69,7 +69,7 @@ public class AbstractArrayStorageTest {
         } catch (StorageException e) {
             fail("Переполнение произошло раньше времени");
         }
-        assertThrows(StorageException.class, () -> {
+        StorageException storageException = assertThrows(StorageException.class, () -> {
             STORAGE.save(RESUME);
         });
     }
@@ -102,10 +102,9 @@ public class AbstractArrayStorageTest {
 
     @Test
     public void get() {
-        Resume[] resumes = STORAGE.getAll();
-        for (Resume resume : resumes) {
-            assertGet(resume);
-        }
+        assertGet(RESUME1);
+        assertGet(RESUME2);
+        assertGet(RESUME3);
     }
 
     public void assertGet(Resume resume) {
