@@ -1,13 +1,12 @@
 package com.javaops.webapp.storage;
 
 import com.javaops.webapp.exception.ExistStorageException;
-import com.javaops.webapp.exception.NotExistStorageException;
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
@@ -32,36 +31,6 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
-    public final void update(Resume r) {
-        int index = findIndex(r.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(r.getUuid());
-        } else {
-            storage[index] = r;
-        }
-    }
-
-    @Override
-    public final void delete(String uuid) {
-        int index = findIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteResume(index);
-            size--;
-        }
-    }
-
-    @Override
-    public final Resume get(String uuid) {
-        int index = findIndex(uuid);
-        if (index > -1) {
-            return storage[index];
-        }
-        throw new NotExistStorageException(uuid);
-    }
-
-    @Override
     public final Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
@@ -71,9 +40,17 @@ public abstract class AbstractArrayStorage implements Storage {
         return size;
     }
 
+    @Override
+    protected Resume getResume(int index) {
+        return storage[index];
+    }
+
+    @Override
+    protected void updateResume(int index, Resume r) {
+        storage[index] = r;
+    }
+
     public abstract void saveResume(int index, Resume resume);
 
     public abstract void deleteResume(int index);
-
-    protected abstract int findIndex(String uuid);
 }
