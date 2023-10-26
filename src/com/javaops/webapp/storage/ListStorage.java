@@ -1,6 +1,5 @@
 package com.javaops.webapp.storage;
 
-import com.javaops.webapp.exception.ExistStorageException;
 import com.javaops.webapp.model.Resume;
 
 import java.util.ArrayList;
@@ -15,27 +14,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void save(Resume r) {
-        if (findIndex(r.getUuid()) > -1) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            storage.add(r);
-        }
+    protected Resume getResume(Object searchKey) {
+        return storage.get((int) searchKey);
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return storage.get(index);
+    protected void saveResume(Object searchKey, Resume r) {
+        storage.add(r);
     }
 
     @Override
-    protected void updateResume(int index, Resume r) {
-        storage.set(index, r);
+    protected void updateResume(Object searchKey, Resume r) {
+        storage.set((int) searchKey, r);
     }
 
     @Override
-    protected void deleteResume(int index) {
-        storage.remove(index);
+    protected void deleteResume(Object searchKey) {
+        storage.remove((int) searchKey);
     }
 
     @Override
@@ -49,8 +44,18 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int findIndex(String uuid) {
-        Resume searchKey = new Resume(uuid);
-        return storage.indexOf(searchKey);
+    protected Object findIndex(String uuid) {
+        for (int i = 0; i < storage.size(); i++) {
+            if (storage.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        int index = (int) searchKey;
+        return index >= 0 && storage.size() > 0 && storage.get(index) != null;
     }
 }

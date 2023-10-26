@@ -1,7 +1,5 @@
 package com.javaops.webapp.storage;
 
-import com.javaops.webapp.exception.ExistStorageException;
-import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -18,19 +16,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public final void save(Resume r) {
-        int index = findIndex(r.getUuid());
-        if (STORAGE_LIMIT == size) {
-            throw new StorageException(r.getUuid(), "ERROR: storage переполнен");
-        } else if (index > -1) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            saveResume(index, r);
-            size++;
-        }
-    }
-
-    @Override
     public final Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
@@ -41,16 +26,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return storage[index];
+    protected Resume getResume(Object searchKey) {
+        return storage[(int) searchKey];
     }
 
     @Override
-    protected void updateResume(int index, Resume r) {
-        storage[index] = r;
+    protected void updateResume(Object searchKey, Resume r) {
+        storage[(int) searchKey] = r;
     }
 
-    public abstract void saveResume(int index, Resume resume);
-
-    public abstract void deleteResume(int index);
+    @Override
+    protected boolean isExist(Object searchKey) {
+        int index = (int) searchKey;
+        return index >= 0 && storage.length > 0 && storage[index] != null;
+    }
 }
