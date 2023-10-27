@@ -2,10 +2,9 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.model.Resume;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class MapStorage extends AbstractStorage {
+public class MapFullNameStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
@@ -29,8 +28,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findSearchKey(String uuid) {
-        return uuid;
+    protected Object findSearchKey(String uuid, String fullName) {
+        return fullName;
     }
 
     @Override
@@ -44,8 +43,10 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[0]);
+    public List<Resume> getAllSorted() {
+        List<Resume> resumes = new ArrayList<>(storage.values());
+        resumes.sort(Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid));
+        return resumes;
     }
 
     @Override

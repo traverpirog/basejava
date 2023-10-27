@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class MainReflection {
     public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        Resume resume = new Resume();
+        Resume resume = new Resume("Иванов Иван Иванович");
         System.out.println(resume.getClass());
         Field field = resume.getClass().getDeclaredFields()[0];
         field.setAccessible(true);

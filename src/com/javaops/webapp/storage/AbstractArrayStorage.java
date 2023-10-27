@@ -2,7 +2,7 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.model.Resume;
 
-import java.util.Arrays;
+import java.util.*;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10000;
@@ -10,18 +10,21 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size;
 
     @Override
-    public final void clear() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
     @Override
-    public final Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    public List<Resume> getAllSorted() {
+        List<Resume> resumes = new ArrayList<>();
+        Collections.addAll(resumes, Arrays.copyOf(storage, size));
+        resumes.sort(Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid));
+        return resumes;
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return size;
     }
 
@@ -38,6 +41,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected boolean isExist(Object searchKey) {
         int index = (int) searchKey;
-        return index >= 0 && storage.length > 0 && storage[index] != null;
+        return index > -1;
     }
 }

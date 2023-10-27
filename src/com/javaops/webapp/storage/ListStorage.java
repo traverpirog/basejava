@@ -3,6 +3,7 @@ package com.javaops.webapp.storage;
 import com.javaops.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
@@ -34,8 +35,9 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return new ArrayList<>(storage).toArray(new Resume[0]);
+    public List<Resume> getAllSorted() {
+        storage.sort(Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid));
+        return storage;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findSearchKey(String uuid) {
+    protected Object findSearchKey(String uuid, String fullName) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;

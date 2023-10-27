@@ -1,7 +1,7 @@
 package com.javaops.webapp.exception;
 
 public class NotExistStorageException extends StorageException{
-    public NotExistStorageException(String uuid) {
-        super(uuid, "ERROR: Резюме " + uuid + " не найдено!");
+    public NotExistStorageException(String key) {
+        super(key, "ERROR: Резюме " + key + " не найдено!");
     }
 }

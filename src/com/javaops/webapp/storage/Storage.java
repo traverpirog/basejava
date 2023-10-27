@@ -2,18 +2,20 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.model.Resume;
 
+import java.util.List;
+
 public interface Storage {
-    public void clear();
+    void clear();
 
-    public void save(Resume r);
+    void save(Resume r);
 
-    public void update(Resume r);
+    void update(Resume r);
 
-    public Resume get(String uuid);
+    Resume get(String uuid, String fullName);
 
-    public void delete(String uuid);
+    void delete(String uuid, String fullName);
 
-    public Resume[] getAll();
+    List<Resume> getAllSorted();
 
-    public int size();
+    int size();
 }

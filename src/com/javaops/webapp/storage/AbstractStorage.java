@@ -6,31 +6,31 @@ import com.javaops.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
     @Override
-    public final Resume get(String uuid) {
-        Object searchKey = getExistingSearchKey(uuid);
+    public final Resume get(String uuid, String fullName) {
+        Object searchKey = getExistingSearchKey(uuid, fullName);
         return getResume(searchKey);
     }
 
     @Override
-    public void save(Resume r) {
-        Object searchKey = getNotExistingSearchKey(r.getUuid());
+    public final void save(Resume r) {
+        Object searchKey = getNotExistingSearchKey(r.getUuid(), r.getFullName());
         saveResume(searchKey, r);
     }
 
     @Override
-    public void update(Resume r) {
-        Object searchKey = getExistingSearchKey(r.getUuid());
+    public final void update(Resume r) {
+        Object searchKey = getExistingSearchKey(r.getUuid(), r.getFullName());
         updateResume(searchKey, r);
     }
 
     @Override
-    public void delete(String uuid) {
-        Object searchKey = getExistingSearchKey(uuid);
+    public final void delete(String uuid, String fullName) {
+        Object searchKey = getExistingSearchKey(uuid, fullName);
         deleteResume(searchKey);
     }
 
-    private Object getExistingSearchKey(String uuid) {
-        Object searchKey = findSearchKey(uuid);
+    private Object getExistingSearchKey(String uuid, String fullName) {
+        Object searchKey = findSearchKey(uuid, fullName);
         if (isExist(searchKey)) {
             return searchKey;
         } else {
@@ -38,8 +38,8 @@ public abstract class AbstractStorage implements Storage {
         }
     }
 
-    private Object getNotExistingSearchKey(String uuid) {
-        Object searchKey = findSearchKey(uuid);
+    private Object getNotExistingSearchKey(String uuid, String fullName) {
+        Object searchKey = findSearchKey(uuid, fullName);
         if (!isExist(searchKey)) {
             return searchKey;
         } else {
@@ -55,7 +55,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deleteResume(Object searchKey);
 
-    protected abstract Object findSearchKey(String uuid);
+    protected abstract Object findSearchKey(String uuid, String fullName);
 
     protected abstract boolean isExist(Object searchKey);
 }

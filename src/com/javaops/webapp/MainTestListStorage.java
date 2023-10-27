@@ -15,7 +15,7 @@ public class MainTestListStorage {
         LIST_STORAGE.save(r2);
         LIST_STORAGE.save(r3);
 
-        System.out.println("Get r1: " + LIST_STORAGE.get(r1.getUuid()));
+        System.out.println("Get r1: " + LIST_STORAGE.get(r1.getUuid(), r1.getFullName()));
         System.out.println("Size: " + LIST_STORAGE.size());
 
         //System.out.println("Get dummy: " + LIST_STORAGE.get("dummy"));
@@ -24,7 +24,7 @@ public class MainTestListStorage {
         System.out.println("Updated r1: " + r1);
 
         printAll();
-        LIST_STORAGE.delete(r1.getUuid());
+        LIST_STORAGE.delete(r1.getUuid(), r1.getFullName());
         printAll();
         LIST_STORAGE.clear();
         printAll();
@@ -34,7 +34,7 @@ public class MainTestListStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        for (Resume r : LIST_STORAGE.getAll()) {
+        for (Resume r : LIST_STORAGE.getAllSorted()) {
             System.out.println(r);
         }
     }

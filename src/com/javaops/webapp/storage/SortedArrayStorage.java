@@ -4,6 +4,7 @@ import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
@@ -26,8 +27,8 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected Object findSearchKey(String uuid) {
-        Resume searchKey = new Resume(uuid);
-        return Arrays.binarySearch(storage, 0, size, searchKey, Resume::compareTo);
+    protected Object findSearchKey(String uuid, String fullName) {
+        Resume searchKey = new Resume(uuid, fullName);
+        return Arrays.binarySearch(storage, 0, size, searchKey, Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid));
     }
 }

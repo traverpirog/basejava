@@ -1,14 +1,14 @@
 package com.javaops.webapp.exception;
 
 public class StorageException extends RuntimeException {
-    private final String uuid;
+    private final String key;
 
-    public StorageException(String uuid, String message) {
+    public StorageException(String key, String message) {
         super(message);
-        this.uuid = uuid;
+        this.key = key;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getKey() {
+        return key;
     }
 }
