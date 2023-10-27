@@ -4,8 +4,9 @@ import com.javaops.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapFullNameStorage extends AbstractStorage {
+public class AbstractMapStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
+
 
     @Override
     protected Resume getResume(Object searchKey) {
@@ -29,7 +30,7 @@ public class MapFullNameStorage extends AbstractStorage {
 
     @Override
     protected Object findSearchKey(String uuid, String fullName) {
-        return fullName;
+        return null;
     }
 
     @Override

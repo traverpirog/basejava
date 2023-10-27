@@ -7,8 +7,8 @@ import org.junit.platform.suite.api.Suite;
         ArrayStorageTest.class,
         SortedArrayStorageTest.class,
         ListStorageTest.class,
-        MapUuidStorageTest.class,
-        MapFullNameStorageTest.class
+        MapByUuidStorageTest.class,
+        MapByFullNameStorageTest.class
 })
 @Suite
 public class AllStorageTest {
