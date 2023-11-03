@@ -4,7 +4,7 @@ import com.javaops.webapp.model.Resume;
 
 import java.util.*;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
@@ -28,18 +28,17 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getResume(Object searchKey) {
-        return storage[(int) searchKey];
+    protected Resume getResume(Integer index) {
+        return storage[index];
     }
 
     @Override
-    protected void updateResume(Object searchKey, Resume r) {
-        storage[(int) searchKey] = r;
+    protected void updateResume(Integer index, Resume r) {
+        storage[index] = r;
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        int index = (int) searchKey;
+    protected boolean isExist(Integer index) {
         return index > -1;
     }
 }

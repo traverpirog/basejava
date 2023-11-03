@@ -7,34 +7,34 @@ import com.javaops.webapp.model.Resume;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class AbstractStorage implements Storage {
-    Comparator<Resume> resumeComparator = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
+public abstract class AbstractStorage<T> implements Storage {
+    protected static final Comparator<Resume> resumeComparator = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
     @Override
     public final Resume get(String uuid, String fullName) {
-        Object searchKey = getExistingSearchKey(uuid, fullName);
+        T searchKey = getExistingSearchKey(uuid);
         return getResume(searchKey);
     }
 
     @Override
     public final void save(Resume r) {
-        Object searchKey = getNotExistingSearchKey(r.getUuid(), r.getFullName());
+        T searchKey = getNotExistingSearchKey(r.getUuid());
         saveResume(searchKey, r);
     }
 
     @Override
     public final void update(Resume r) {
-        Object searchKey = getExistingSearchKey(r.getUuid(), r.getFullName());
+        T searchKey = getExistingSearchKey(r.getUuid());
         updateResume(searchKey, r);
     }
 
     @Override
     public final void delete(String uuid, String fullName) {
-        Object searchKey = getExistingSearchKey(uuid, fullName);
+        T searchKey = getExistingSearchKey(uuid);
         deleteResume(searchKey);
     }
 
-    private Object getExistingSearchKey(String uuid, String fullName) {
-        Object searchKey = findSearchKey(uuid, fullName);
+    private T getExistingSearchKey(String uuid) {
+        T searchKey = findSearchKey(uuid);
         if (isExist(searchKey)) {
             return searchKey;
         } else {
@@ -42,8 +42,8 @@ public abstract class AbstractStorage implements Storage {
         }
     }
 
-    private Object getNotExistingSearchKey(String uuid, String fullName) {
-        Object searchKey = findSearchKey(uuid, fullName);
+    private T getNotExistingSearchKey(String uuid) {
+        T searchKey = findSearchKey(uuid);
         if (!isExist(searchKey)) {
             return searchKey;
         } else {
@@ -60,15 +60,15 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract List<Resume> getStorage();
 
-    protected abstract Resume getResume(Object searchKey);
+    protected abstract Resume getResume(T searchKey);
 
-    protected abstract void saveResume(Object searchKey, Resume r);
+    protected abstract void saveResume(T searchKey, Resume r);
 
-    protected abstract void updateResume(Object searchKey, Resume r);
+    protected abstract void updateResume(T searchKey, Resume r);
 
-    protected abstract void deleteResume(Object searchKey);
+    protected abstract void deleteResume(T searchKey);
 
-    protected abstract Object findSearchKey(String uuid, String fullName);
+    protected abstract T findSearchKey(String uuid);
 
-    protected abstract boolean isExist(Object searchKey);
+    protected abstract boolean isExist(T searchKey);
 }

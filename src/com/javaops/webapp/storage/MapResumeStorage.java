@@ -2,34 +2,34 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.model.Resume;
 
-public class MapResumeStorage extends AbstractMapStorage {
+public class MapResumeStorage extends AbstractMapStorage<Resume> {
     @Override
-    protected Resume getResume(Object searchKey) {
-        return storage.get(String.valueOf(searchKey));
+    protected Resume getResume(Resume resume) {
+        return resume;
     }
 
     @Override
-    protected void saveResume(Object searchKey, Resume r) {
-        storage.put(String.valueOf(searchKey), r);
+    protected void saveResume(Resume resume, Resume r) {
+        storage.put(r.getUuid(), r);
     }
 
     @Override
-    protected void updateResume(Object searchKey, Resume r) {
-        storage.replace(String.valueOf(searchKey), r);
+    protected void updateResume(Resume resume, Resume r) {
+        storage.replace(resume.getUuid(), r);
     }
 
     @Override
-    protected void deleteResume(Object searchKey) {
-        storage.remove(String.valueOf(searchKey));
+    protected void deleteResume(Resume resume) {
+        storage.remove(resume.getUuid());
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return storage.containsKey(String.valueOf(searchKey));
+    protected boolean isExist(Resume resume) {
+        return resume != null;
     }
 
     @Override
-    protected Object findSearchKey(String uuid, String fullName) {
-        return new Resume(uuid, fullName);
+    protected Resume findSearchKey(String uuid) {
+        return storage.get(uuid);
     }
 }
