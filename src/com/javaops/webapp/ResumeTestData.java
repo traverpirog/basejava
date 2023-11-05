@@ -11,7 +11,7 @@ import java.util.Map;
 public class ResumeTestData {
     private static final Resume RESUME = new Resume("uuid1", "Igor Aver");
     private static final Map<ContactType, String> CONTACTS = new HashMap<>();
-    private static final Map<SectionType, ? super AbstractSection> SECTIONS = new HashMap<>();
+    private static final Map<SectionType, AbstractSection> SECTIONS = new HashMap<>();
     private static final String PHONE = "+7 (999) 999-99-99";
     private static final String MOBILE = "+7 (999) 999-99-99";
     private static final String HOME_PHONE = "+7 (999) 999-99-99";
@@ -27,8 +27,10 @@ public class ResumeTestData {
     private static final Period PERIOD_2 = new Period(LocalDate.of(2020, 11, 28), LocalDate.now(), "Webmaster", "lorem ipsum");
     private static final List<Period> PERIODS = new ArrayList<>();
     private static final List<Period> PERIODS_2 = new ArrayList<>();
-    private static final CompanySection COMPANY_SECTION_1 = new CompanySection("VK", "vk.com", PERIODS);
-    private static final CompanySection COMPANY_SECTION_2 = new CompanySection("YANDEX", "ya.ru", PERIODS_2);
+    private static final Company COMPANY_1 = new Company("VK", "vk.com", PERIODS);
+    private static final Company COMPANY_2 = new Company("YANDEX", "ya.ru", PERIODS_2);
+    private static final List<Company> COMPANIES = new ArrayList<>();
+    private static final CompanySection COMPANY_SECTION_1 = new CompanySection(COMPANIES);
     private static final List<String> ACHIEVEMENT = new ArrayList<>();
     private static final List<String> QUALIFICATIONS = new ArrayList<>();
     private static final List<String> EXPERIENCE = new ArrayList<>();
@@ -48,10 +50,11 @@ public class ResumeTestData {
         PERIODS_2.add(PERIOD_2);
         PERIODS_2.add(PERIOD_2);
 
-        EXPERIENCE.add(COMPANY_SECTION_1.toString());
-        EXPERIENCE.add(COMPANY_SECTION_2.toString());
-        EDUCATION.add(COMPANY_SECTION_1.toString());
-        EDUCATION.add(COMPANY_SECTION_2.toString());
+        COMPANIES.add(COMPANY_1);
+        COMPANIES.add(COMPANY_2);
+
+        EXPERIENCE.add(COMPANIES.toString());
+        EDUCATION.add(COMPANIES.toString());
     }
 
     public static void main(String[] args) {

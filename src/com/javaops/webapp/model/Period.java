@@ -48,6 +48,28 @@ public class Period {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Period period = (Period) o;
+
+        if (!dateFrom.equals(period.dateFrom)) return false;
+        if (!dateTo.equals(period.dateTo)) return false;
+        if (!title.equals(period.title)) return false;
+        return description.equals(period.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = dateFrom.hashCode();
+        result = 31 * result + dateTo.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + description.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Period{" +
                 "dateFrom=" + dateFrom +

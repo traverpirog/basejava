@@ -1,48 +1,42 @@
 package com.javaops.webapp.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CompanySection extends AbstractSection {
-    private String name;
-    private String website;
-    private List<Period> periods;
+    private List<Company> companies;
 
-    public CompanySection(String name, String website, List<Period> periods) {
-        this.name = name;
-        this.website = website;
-        this.periods = periods;
+    public CompanySection(List<Company> companies) {
+        this.companies = companies;
     }
 
-    public String getName() {
-        return name;
+    public List<Company> getCompanies() {
+        return companies;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
     }
 
-    public String getWebsite() {
-        return website;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompanySection that = (CompanySection) o;
+
+        return Objects.equals(companies, that.companies);
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public List<Period> getPeriods() {
-        return periods;
-    }
-
-    public void setPeriods(List<Period> periods) {
-        this.periods = periods;
+    @Override
+    public int hashCode() {
+        return companies != null ? companies.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "CompanySection{" +
-                "name='" + name + '\'' +
-                ", website='" + website + '\'' +
-                ", periods=" + periods +
+                "companies=" + companies +
                 '}';
     }
 }
