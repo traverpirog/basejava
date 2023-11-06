@@ -11,8 +11,8 @@ import java.util.UUID;
 public class Resume {
     private final String uuid;
     private final String fullName;
-    private Map<ContactType, String> contacts = new HashMap<>();
-    private Map<SectionType, AbstractSection> sections = new HashMap<>();
+    private final Map<ContactType, String> contacts = new HashMap<>();
+    private final Map<SectionType, AbstractSection> sections = new HashMap<>();
 
 
     public Resume(String fullName) {
@@ -38,16 +38,8 @@ public class Resume {
         return contacts;
     }
 
-    public void setContacts(Map<ContactType, String> contacts) {
-        this.contacts = contacts;
-    }
-
     public Map<SectionType, AbstractSection> getSections() {
         return sections;
-    }
-
-    public void setSections(Map<SectionType, AbstractSection> sections) {
-        this.sections = sections;
     }
 
     @Override

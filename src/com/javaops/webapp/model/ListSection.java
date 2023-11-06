@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends AbstractSection {
-    private List<String> content;
+    private final List<String> content;
 
     public ListSection(List<String> content) {
         this.content = content;
@@ -12,10 +12,6 @@ public class ListSection extends AbstractSection {
 
     public List<String> getList() {
         return content;
-    }
-
-    public void setList(List<String> content) {
-        this.content = content;
     }
 
     @Override
