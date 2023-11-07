@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ResumeTestData {
-    private static final Resume RESUME = new Resume("uuid1", "Igor Aver");
+    private static final Resume RESUME;
     private static final Map<ContactType, String> CONTACTS = new HashMap<>();
     private static final Map<SectionType, AbstractSection> SECTIONS = new HashMap<>();
     private static final String PHONE = "+7 (999) 999-99-99";
@@ -55,6 +55,8 @@ public class ResumeTestData {
 
         EXPERIENCE.add(COMPANIES.toString());
         EDUCATION.add(COMPANIES.toString());
+
+        RESUME = new Resume("uuid1", "Igor Aver");
     }
 
     public static void main(String[] args) {
@@ -82,9 +84,6 @@ public class ResumeTestData {
                 case EDUCATION -> SECTIONS.put(SectionType.EDUCATION, new ListSection(EDUCATION));
             }
         }
-
-        RESUME.setContacts(CONTACTS);
-        RESUME.setSections(SECTIONS);
 
         System.out.println(RESUME);
     }

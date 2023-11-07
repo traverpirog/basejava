@@ -1,14 +1,18 @@
 package com.javaops.webapp.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Period {
-    private LocalDate dateFrom;
-    private LocalDate dateTo;
-    private String title;
-    private String description;
+    private final LocalDate dateFrom;
+    private final LocalDate dateTo;
+    private final String title;
+    private final String description;
 
     public Period(LocalDate dateFrom, LocalDate dateTo, String title, String description) {
+        Objects.requireNonNull(dateFrom, "dateFrom must not be null");
+        Objects.requireNonNull(dateTo, "dateTo must not be null");
+        Objects.requireNonNull(title, "title must not be null");
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.title = title;
@@ -19,32 +23,16 @@ public class Period {
         return dateFrom;
     }
 
-    public void setDateFrom(LocalDate dateFrom) {
-        this.dateFrom = dateFrom;
-    }
-
     public LocalDate getDateTo() {
         return dateTo;
-    }
-
-    public void setDateTo(LocalDate dateTo) {
-        this.dateTo = dateTo;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override
@@ -57,7 +45,7 @@ public class Period {
         if (!dateFrom.equals(period.dateFrom)) return false;
         if (!dateTo.equals(period.dateTo)) return false;
         if (!title.equals(period.title)) return false;
-        return description.equals(period.description);
+        return Objects.equals(description, period.description);
     }
 
     @Override
@@ -65,7 +53,7 @@ public class Period {
         int result = dateFrom.hashCode();
         result = 31 * result + dateTo.hashCode();
         result = 31 * result + title.hashCode();
-        result = 31 * result + description.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
