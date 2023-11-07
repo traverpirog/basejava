@@ -8,6 +8,11 @@ public class StorageException extends RuntimeException {
         this.key = key;
     }
 
+    public StorageException(String key, String message, Exception exception) {
+        super(message, exception);
+        this.key = key;
+    }
+
     public String getKey() {
         return key;
     }

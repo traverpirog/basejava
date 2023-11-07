@@ -1,5 +1,6 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.ResumeTestData;
 import com.javaops.webapp.exception.ExistStorageException;
 import com.javaops.webapp.exception.NotExistStorageException;
 import com.javaops.webapp.model.Resume;
@@ -26,10 +27,10 @@ public class AbstractStorageTest {
     protected final String FULL_NAME_3 = "Ибрагимов Ибрагим Ибрагимович";
     protected final String UUID_NOT_EXIST = "dummy";
     protected final String FULL_NAME_NOT_EXIST = "Алексеев Алексей Алексеевич";
-    protected final Resume RESUME = new Resume(UUID, FULL_NAME);
-    protected final Resume RESUME1 = new Resume(UUID1, FULL_NAME_1);
-    protected final Resume RESUME2 = new Resume(UUID2, FULL_NAME_2);
-    protected final Resume RESUME3 = new Resume(UUID3, FULL_NAME_3);
+    protected final Resume RESUME = ResumeTestData.getResume(UUID, FULL_NAME);
+    protected final Resume RESUME1 = ResumeTestData.getResume(UUID1, FULL_NAME_1);
+    protected final Resume RESUME2 = ResumeTestData.getResume(UUID2, FULL_NAME_2);
+    protected final Resume RESUME3 = ResumeTestData.getResume(UUID3, FULL_NAME_3);
     protected final List<Resume> EXPECTED = Arrays.asList(RESUME1, RESUME2, RESUME3);
 
     protected AbstractStorageTest(Storage storage) {
@@ -61,7 +62,7 @@ public class AbstractStorageTest {
     @Test
     public void saveExist() {
         Assertions.assertThrows(ExistStorageException.class, () -> {
-            STORAGE.save(new Resume(UUID1, FULL_NAME_1));
+            STORAGE.save(ResumeTestData.getResume(UUID1, FULL_NAME_1));
         });
     }
 
@@ -74,7 +75,7 @@ public class AbstractStorageTest {
 
     @Test
     public void updateNotExist() {
-        assertThrows(NotExistStorageException.class, () -> STORAGE.update(new Resume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST)));
+        assertThrows(NotExistStorageException.class, () -> STORAGE.update(ResumeTestData.getResume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST)));
     }
 
     @Test

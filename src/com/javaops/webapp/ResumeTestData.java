@@ -3,15 +3,12 @@ package com.javaops.webapp;
 import com.javaops.webapp.model.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ResumeTestData {
-    private static final Resume RESUME;
-    private static final Map<ContactType, String> CONTACTS = new HashMap<>();
-    private static final Map<SectionType, AbstractSection> SECTIONS = new HashMap<>();
+    private static Resume RESUME;
+    private static final Map<ContactType, String> CONTACTS = new EnumMap<>(ContactType.class);
+    private static final Map<SectionType, AbstractSection> SECTIONS = new EnumMap<>(SectionType.class);
     private static final String PHONE = "+7 (999) 999-99-99";
     private static final String MOBILE = "+7 (999) 999-99-99";
     private static final String HOME_PHONE = "+7 (999) 999-99-99";
@@ -56,10 +53,6 @@ public class ResumeTestData {
         EXPERIENCE.add(COMPANIES.toString());
         EDUCATION.add(COMPANIES.toString());
 
-        RESUME = new Resume("uuid1", "Igor Aver");
-    }
-
-    public static void main(String[] args) {
         for (ContactType contact : ContactType.values()) {
             switch (contact) {
                 case PHONE -> CONTACTS.put(ContactType.PHONE, PHONE);
@@ -84,7 +77,22 @@ public class ResumeTestData {
                 case EDUCATION -> SECTIONS.put(SectionType.EDUCATION, new ListSection(EDUCATION));
             }
         }
+    }
 
-        System.out.println(RESUME);
+    public static void addInfo(Resume resume) {
+        resume.getContacts().putAll(CONTACTS);
+        resume.getSections().putAll(SECTIONS);
+    }
+
+    public static Resume getResume(String fullName) {
+        RESUME = new Resume(fullName);
+        addInfo(RESUME);
+        return RESUME;
+    }
+
+    public static Resume getResume(String uuid, String fullName) {
+        RESUME = new Resume(uuid, fullName);
+        addInfo(RESUME);
+        return RESUME;
     }
 }

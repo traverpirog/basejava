@@ -1,7 +1,7 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.ResumeTestData;
 import com.javaops.webapp.exception.StorageException;
-import com.javaops.webapp.model.Resume;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,7 +17,7 @@ public class AbstractArrayStorageTest extends AbstractStorageTest{
         try {
             int STORAGE_LIMIT = AbstractArrayStorage.STORAGE_LIMIT;
             for (int i = 3; i < STORAGE_LIMIT; i++) {
-                STORAGE.save(new Resume(FULL_NAME));
+                STORAGE.save(ResumeTestData.getResume(FULL_NAME));
             }
         } catch (StorageException e) {
             fail("Переполнение произошло раньше времени");
