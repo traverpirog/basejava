@@ -5,12 +5,13 @@ import com.javaops.webapp.model.Resume;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
     private final File directory;
+
     protected AbstractFileStorage(File directory) {
         Objects.requireNonNull(directory, "directory must not be null");
         if (!directory.isDirectory()) {
@@ -25,7 +26,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         for (File file : getListFiles()) {
-            file.delete();
+            deleteResume(file);
         }
     }
 
@@ -63,26 +64,46 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
     }
 
-    protected abstract void writeFile(File file, Resume r) throws IOException;
-
     @Override
     protected Resume getResume(File file) {
-        return readFile(file);
+        try {
+            return readFile(file);
+        } catch (IOException e) {
+            throw new StorageException("IO error", file.getName(), e);
+        }
     }
-
-    protected abstract Resume readFile(File file);
 
     @Override
     protected void deleteResume(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("File was not deleted", file.getName());
+        }
     }
 
     @Override
     protected List<Resume> getStorage() {
-        return Arrays.stream(getListFiles()).map(this::readFile).toList();
+        List<Resume> list = new ArrayList<>();
+        for (File file : getListFiles()) {
+            Resume resume;
+            try {
+                resume = readFile(file);
+            } catch (IOException e) {
+                throw new StorageException("IO error", file.getName(), e);
+            }
+            list.add(resume);
+        }
+        return list;
     }
 
     private File[] getListFiles() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Invalid path", "");
+        }
         return directory.listFiles();
     }
+
+    protected abstract void writeFile(File file, Resume r) throws IOException;
+
+    protected abstract Resume readFile(File file) throws IOException;
 }
