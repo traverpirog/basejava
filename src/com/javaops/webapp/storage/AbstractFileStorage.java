@@ -84,12 +84,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected List<Resume> getStorage() {
         List<Resume> list = new ArrayList<>();
         for (File file : getListFiles()) {
-            Resume resume;
-            try {
-                resume = readFile(file);
-            } catch (IOException e) {
-                throw new StorageException("IO error", file.getName(), e);
-            }
+            Resume resume = getResume(file);
             list.add(resume);
         }
         return list;
@@ -100,7 +95,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (files == null) {
             throw new StorageException("Invalid path", "");
         }
-        return directory.listFiles();
+        return files;
     }
 
     protected abstract void writeFile(File file, Resume r) throws IOException;
