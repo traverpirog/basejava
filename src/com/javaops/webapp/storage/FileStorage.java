@@ -3,17 +3,18 @@ package com.javaops.webapp.storage;
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private final File directory;
+    private final SaveReadStrategy saveReadStrategy;
 
-    protected AbstractFileStorage(File directory) {
+    protected FileStorage(File directory, SaveReadStrategy saveReadStrategy) {
         Objects.requireNonNull(directory, "directory must not be null");
+        this.saveReadStrategy = saveReadStrategy;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -49,16 +50,16 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void saveResume(File file, Resume r) {
         try {
             file.createNewFile();
-            writeFile(file, r);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
+        updateResume(file, r);
     }
 
     @Override
     protected void updateResume(File file, Resume r) {
         try {
-            writeFile(file, r);
+            saveReadStrategy.writeFile(new BufferedOutputStream(new FileOutputStream(file)), r);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
@@ -67,7 +68,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume getResume(File file) {
         try {
-            return readFile(file);
+            return saveReadStrategy.readFile(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
@@ -97,8 +98,4 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
         return files;
     }
-
-    protected abstract void writeFile(File file, Resume r) throws IOException;
-
-    protected abstract Resume readFile(File file) throws IOException;
 }
