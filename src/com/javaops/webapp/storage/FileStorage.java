@@ -2,6 +2,7 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
+import com.javaops.webapp.storage.strategies.SaveReadStrategy;
 
 import java.io.*;
 import java.util.ArrayList;

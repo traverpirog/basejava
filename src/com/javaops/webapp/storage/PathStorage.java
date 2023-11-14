@@ -2,6 +2,7 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
+import com.javaops.webapp.storage.strategies.SaveReadStrategy;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -27,25 +28,17 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        try (Stream<Path> files = Files.list(directory)) {
-            files.forEach(this::deleteResume);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
-        }
+        getListPaths().forEach(this::deleteResume);
     }
 
     @Override
     public int size() {
-        try (Stream<Path> files = Files.list(directory)) {
-            return (int) files.count();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return (int) getListPaths().count();
     }
 
     @Override
     protected Path findSearchKey(String uuid) {
-        return Paths.get(String.valueOf(directory), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -93,18 +86,20 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected List<Resume> getStorage() {
         List<Resume> list = new ArrayList<>();
-        for (Path path : getListPaths()) {
+        getListPaths().forEach(path -> {
             Resume resume = getResume(path);
             list.add(resume);
-        }
+        });
         return list;
     }
 
-    private Path[] getListPaths() {
-        try (Stream<Path> pathStream = Files.list(directory)) {
-            return pathStream.toList().toArray(new Path[0]);
+    private Stream<Path> getListPaths() {
+        Stream<Path> pathStream;
+        try {
+            pathStream = Files.list(directory);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return pathStream;
     }
 }

@@ -1,4 +1,4 @@
-package com.javaops.webapp.storage;
+package com.javaops.webapp.storage.strategies;
 
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
