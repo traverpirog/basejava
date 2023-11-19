@@ -1,17 +1,24 @@
 package com.javaops.webapp.model;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Period implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private final LocalDate dateFrom;
-    private final LocalDate dateTo;
-    private final String title;
-    private final String description;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
+    private String title;
+    private String description;
+
+    public Period() {
+    }
 
     public Period(LocalDate dateFrom, LocalDate dateTo, String title, String description) {
         Objects.requireNonNull(dateFrom, "dateFrom must not be null");

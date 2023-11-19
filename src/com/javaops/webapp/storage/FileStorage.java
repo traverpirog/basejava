@@ -2,7 +2,7 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
-import com.javaops.webapp.storage.strategies.SaveReadStrategy;
+import com.javaops.webapp.storage.strategies.SerializerStrategy;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ import java.util.Objects;
 
 public class FileStorage extends AbstractStorage<File> {
     private final File directory;
-    private final SaveReadStrategy saveReadStrategy;
+    private final SerializerStrategy serializerStrategy;
 
-    protected FileStorage(File directory, SaveReadStrategy saveReadStrategy) {
+    protected FileStorage(File directory, SerializerStrategy serializerStrategy) {
         Objects.requireNonNull(directory, "directory must not be null");
-        this.saveReadStrategy = saveReadStrategy;
+        this.serializerStrategy = serializerStrategy;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -60,7 +60,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void updateResume(File file, Resume r) {
         try {
-            saveReadStrategy.writeFile(new BufferedOutputStream(new FileOutputStream(file)), r);
+            serializerStrategy.writeFile(new BufferedOutputStream(new FileOutputStream(file)), r);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
@@ -69,7 +69,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected Resume getResume(File file) {
         try {
-            return saveReadStrategy.readFile(new BufferedInputStream(new FileInputStream(file)));
+            return serializerStrategy.readFile(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }

@@ -2,9 +2,11 @@ package com.javaops.webapp.storage;
 
 import com.javaops.webapp.exception.StorageException;
 import com.javaops.webapp.model.Resume;
-import com.javaops.webapp.storage.strategies.SaveReadStrategy;
+import com.javaops.webapp.storage.strategies.SerializerStrategy;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,11 +17,11 @@ import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
-    private final SaveReadStrategy saveReadStrategy;
+    private final SerializerStrategy serializerStrategy;
 
-    protected PathStorage(String dir, SaveReadStrategy saveReadStrategy) {
+    protected PathStorage(String dir, SerializerStrategy serializerStrategy) {
         directory = Paths.get(dir);
-        this.saveReadStrategy = saveReadStrategy;
+        this.serializerStrategy = serializerStrategy;
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or not writable");
@@ -59,7 +61,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void updateResume(Path path, Resume r) {
         try {
-            saveReadStrategy.writeFile(new BufferedOutputStream(Files.newOutputStream(path)), r);
+            serializerStrategy.writeFile(new BufferedOutputStream(Files.newOutputStream(path)), r);
         } catch (IOException e) {
             throw new StorageException("IO error", path.toString(), e);
         }
@@ -77,7 +79,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume getResume(Path path) {
         try {
-            return saveReadStrategy.readFile(new BufferedInputStream(Files.newInputStream(path)));
+            return serializerStrategy.readFile(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("IO error", path.toString(), e);
         }

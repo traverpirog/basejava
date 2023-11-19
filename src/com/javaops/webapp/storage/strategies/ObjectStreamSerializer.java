@@ -5,7 +5,7 @@ import com.javaops.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStrategy implements SaveReadStrategy {
+public class ObjectStreamSerializer implements SerializerStrategy {
     @Override
     public void writeFile(OutputStream outputStream, Resume r) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {

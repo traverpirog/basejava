@@ -1,5 +1,10 @@
 package com.javaops.webapp.model;
 
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
@@ -7,14 +12,18 @@ import java.util.*;
 /**
  * Initial resume class
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private final String uuid;
-    private final String fullName;
+    private String uuid;
+    private String fullName;
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
     private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
+    public Resume() {
+    }
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -57,21 +66,12 @@ public class Resume implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
-        if (!Objects.equals(uuid, resume.uuid)) return false;
-        if (!Objects.equals(fullName, resume.fullName)) return false;
-        if (!contacts.equals(resume.contacts)) return false;
-        return sections.equals(resume.sections);
+        return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName) && Objects.equals(contacts, resume.contacts) && Objects.equals(sections, resume.sections);
     }
 
     @Override
     public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
-        result = 31 * result + contacts.hashCode();
-        result = 31 * result + sections.hashCode();
-        return result;
+        return Objects.hash(uuid, fullName, contacts, sections);
     }
 }
