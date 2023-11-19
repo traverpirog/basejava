@@ -94,12 +94,10 @@ public class PathStorage extends AbstractStorage<Path> {
     }
 
     private Stream<Path> getListPaths() {
-        Stream<Path> pathStream;
         try {
-            pathStream = Files.list(directory);
+            return Files.list(directory);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return pathStream;
     }
 }
