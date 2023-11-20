@@ -63,9 +63,7 @@ public class AbstractStorageTest {
 
     @Test
     public void saveExist() {
-        Assertions.assertThrows(ExistStorageException.class, () -> {
-            STORAGE.save(ResumeTestData.getResume(UUID1, FULL_NAME_1));
-        });
+        Assertions.assertThrows(ExistStorageException.class, () -> STORAGE.save(ResumeTestData.getResume(UUID1, FULL_NAME_1)));
     }
 
     @Test
@@ -84,9 +82,7 @@ public class AbstractStorageTest {
     public void delete() {
         STORAGE.delete(UUID1, FULL_NAME_1);
         assertSize(2);
-        assertThrows(NotExistStorageException.class, () -> {
-            STORAGE.get(UUID1, FULL_NAME_1);
-        });
+        assertThrows(NotExistStorageException.class, () -> STORAGE.get(UUID1, FULL_NAME_1));
     }
 
     @Test

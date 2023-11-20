@@ -6,9 +6,13 @@ import com.javaops.webapp.model.AbstractSection;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.time.LocalDate;
 
 public class JsonParser {
-    private static Gson GSON = new GsonBuilder().registerTypeAdapter(AbstractSection.class, new JsonSectionAdapter<>()).create();
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(AbstractSection.class, new JsonSectionAdapter<>())
+            .registerTypeAdapter(LocalDate.class, new LocalDateJsonAdapter())
+            .create();
 
     public static <T> T read(Reader reader, Class<T> tClass) {
         return GSON.fromJson(reader, tClass);

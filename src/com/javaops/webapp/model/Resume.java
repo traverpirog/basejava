@@ -52,6 +52,14 @@ public class Resume implements Serializable {
         return sections;
     }
 
+    public void addContact(ContactType type, String value) {
+        contacts.put(type, value);
+    }
+
+    public void addSection(SectionType type, AbstractSection value) {
+        sections.put(type, value);
+    }
+
     @Override
     public String toString() {
         return "Resume{" +

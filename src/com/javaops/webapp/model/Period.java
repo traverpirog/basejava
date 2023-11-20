@@ -1,7 +1,9 @@
 package com.javaops.webapp.model;
 
+import com.javaops.webapp.util.LocalDateXmlAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +14,9 @@ import java.util.Objects;
 public class Period implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+    @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
     private LocalDate dateFrom;
+    @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
     private LocalDate dateTo;
     private String title;
     private String description;
@@ -44,6 +48,22 @@ public class Period implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDateFrom(LocalDate dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public void setDateTo(LocalDate dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

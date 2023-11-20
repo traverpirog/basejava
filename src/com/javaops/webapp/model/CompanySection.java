@@ -21,6 +21,10 @@ public class CompanySection extends AbstractSection {
         return companies;
     }
 
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
