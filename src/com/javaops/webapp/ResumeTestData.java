@@ -24,11 +24,11 @@ public class ResumeTestData {
     private static final String WEBSITE = "https://vk.com";
     private static final String OBJECTIVE = "Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям";
     private static final String PERSONAL = "Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.";
-    private static final Period PERIOD_1 = new Period(DateUtil.of(2020, Month.MAY), DateUtil.of(2021, Month.DECEMBER), "Webmaster", "lorem ipsum");
+    private static final Period PERIOD_1 = new Period(DateUtil.of(2020, Month.MAY), DateUtil.of(2021, Month.DECEMBER), "Webmaster", null);
     private static final Period PERIOD_2 = new Period(DateUtil.of(2020, Month.OCTOBER), DateUtil.of(2022, Month.DECEMBER), "Webmaster", "lorem ipsum");
     private static final List<Period> PERIODS = new ArrayList<>();
     private static final List<Period> PERIODS_2 = new ArrayList<>();
-    private static final Company COMPANY_1 = new Company("VK", "vk.com", PERIODS);
+    private static final Company COMPANY_1 = new Company("VK", null, PERIODS);
     private static final Company COMPANY_2 = new Company("YANDEX", "ya.ru", PERIODS_2);
     private static final List<Company> COMPANIES = new ArrayList<>();
     private static final List<String> ACHIEVEMENT = new ArrayList<>();
