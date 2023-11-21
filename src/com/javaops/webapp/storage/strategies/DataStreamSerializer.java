@@ -16,13 +16,11 @@ public class DataStreamSerializer implements SerializerStrategy {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
-            dos.writeInt(contacts.size());
             writeWithException(contacts.keySet(), dos, o -> {
                 dos.writeUTF(o.name());
                 dos.writeUTF(contacts.get(o));
             });
             Map<SectionType, AbstractSection> sections = resume.getSections();
-            dos.writeInt(sections.size());
             writeWithException(sections.keySet(), dos, o -> {
                 dos.writeUTF(o.name());
                 switch (o) {
@@ -38,18 +36,17 @@ public class DataStreamSerializer implements SerializerStrategy {
 
     private <T> void writeWithException(Collection<T> tCollection, DataOutputStream dos, CheckedConsumer<T> checkedConsumer) throws IOException {
         Objects.requireNonNull(dos);
+        dos.writeInt(tCollection.size());
         for (T item : tCollection) {
             checkedConsumer.accept(item);
         }
     }
 
     private void writeListSection(DataOutputStream dos, List<String> list) throws IOException {
-        dos.writeInt(list.size());
         writeWithException(list, dos, dos::writeUTF);
     }
 
     private void writeCompanySection(DataOutputStream dos, List<Company> list) throws IOException {
-        dos.writeInt(list.size());
         writeWithException(list, dos, company -> {
             dos.writeUTF(company.getName());
             dos.writeUTF(Objects.requireNonNullElse(company.getWebsite(), ""));
@@ -58,7 +55,6 @@ public class DataStreamSerializer implements SerializerStrategy {
     }
 
     private void writePeriods(DataOutputStream dos, List<Period> list) throws IOException {
-        dos.writeInt(list.size());
         writeWithException(list, dos, period -> {
             dos.writeUTF(period.getDateFrom().format(FORMATTER));
             dos.writeUTF(period.getDateTo().format(FORMATTER));
@@ -71,55 +67,59 @@ public class DataStreamSerializer implements SerializerStrategy {
     public Resume readFile(InputStream inputStream) throws IOException {
         try (DataInputStream dis = new DataInputStream(inputStream)) {
             Resume resume = new Resume(dis.readUTF(), dis.readUTF());
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+            readWithException(dis, o -> {
+                resume.addContact(ContactType.valueOf(((DataInputStream) o).readUTF()), ((DataInputStream) o).readUTF());
+            });
+            readWithException(dis, o -> {
+                SectionType sectionType = SectionType.valueOf(((DataInputStream) o).readUTF());
                 switch (sectionType) {
-                    case PERSONAL, OBJECTIVE -> resume.addSection(sectionType, new TextSection(dis.readUTF()));
+                    case PERSONAL, OBJECTIVE ->
+                            resume.addSection(sectionType, new TextSection(((DataInputStream) o).readUTF()));
                     case ACHIEVEMENT, QUALIFICATIONS ->
-                            resume.addSection(sectionType, new ListSection(readListSection(dis)));
+                            resume.addSection(sectionType, new ListSection(readListSection((DataInputStream) o)));
                     case EXPERIENCE, EDUCATION ->
-                            resume.addSection(sectionType, new CompanySection(readCompanySection(dis)));
+                            resume.addSection(sectionType, new CompanySection(readCompanySection((DataInputStream) o)));
                 }
-            }
+            });
             return resume;
         }
     }
 
-    private List<String> readListSection(DataInputStream dis) throws IOException {
-        int size = dis.readInt();
-        List<String> list = new ArrayList<>();
+    private <T> void readWithException(DataInputStream dataInputStream, CheckedConsumer<T> checkedConsumer) throws IOException {
+        Objects.requireNonNull(dataInputStream);
+        int size = dataInputStream.readInt();
         for (int i = 0; i < size; i++) {
-            list.add(dis.readUTF());
+            checkedConsumer.accept((T) dataInputStream);
         }
+    }
+
+    private List<String> readListSection(DataInputStream dis) throws IOException {
+        List<String> list = new ArrayList<>();
+        readWithException(dis, o -> {
+            list.add(((DataInputStream) o).readUTF());
+        });
         return list;
     }
 
     private List<Company> readCompanySection(DataInputStream dis) throws IOException {
-        int size = dis.readInt();
         List<Company> list = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            String companyName = dis.readUTF();
-            String website = dis.readUTF();
-            list.add(new Company(companyName, website.isEmpty() ? null : website, readPeriods(dis)));
-        }
+        readWithException(dis, o -> {
+            String companyName = ((DataInputStream) o).readUTF();
+            String website = ((DataInputStream) o).readUTF();
+            list.add(new Company(companyName, website.isEmpty() ? null : website, readPeriods((DataInputStream) o)));
+        });
         return list;
     }
 
     private List<Period> readPeriods(DataInputStream dis) throws IOException {
-        int size = dis.readInt();
         List<Period> periods = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            LocalDate dateFrom = LocalDate.parse(dis.readUTF(), FORMATTER);
-            LocalDate dateTo = LocalDate.parse(dis.readUTF(), FORMATTER);
-            String title = dis.readUTF();
-            String description = dis.readUTF();
+        readWithException(dis, o -> {
+            LocalDate dateFrom = LocalDate.parse(((DataInputStream) o).readUTF(), FORMATTER);
+            LocalDate dateTo = LocalDate.parse(((DataInputStream) o).readUTF(), FORMATTER);
+            String title = ((DataInputStream) o).readUTF();
+            String description = ((DataInputStream) o).readUTF();
             periods.add(new Period(dateFrom, dateTo, title, description.isEmpty() ? null : description));
-        }
+        });
         return periods;
     }
 }
