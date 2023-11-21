@@ -72,13 +72,14 @@ public class DataStreamSerializer implements SerializerStrategy {
             });
             readWithException(dis, o -> {
                 SectionType sectionType = SectionType.valueOf(((DataInputStream) o).readUTF());
+                DataInputStream dataInputStream = (DataInputStream) o;
                 switch (sectionType) {
                     case PERSONAL, OBJECTIVE ->
-                            resume.addSection(sectionType, new TextSection(((DataInputStream) o).readUTF()));
+                            resume.addSection(sectionType, new TextSection(dataInputStream.readUTF()));
                     case ACHIEVEMENT, QUALIFICATIONS ->
-                            resume.addSection(sectionType, new ListSection(readListSection((DataInputStream) o)));
+                            resume.addSection(sectionType, new ListSection(readListSection(dataInputStream)));
                     case EXPERIENCE, EDUCATION ->
-                            resume.addSection(sectionType, new CompanySection(readCompanySection((DataInputStream) o)));
+                            resume.addSection(sectionType, new CompanySection(readCompanySection(dataInputStream)));
                 }
             });
             return resume;
@@ -104,8 +105,9 @@ public class DataStreamSerializer implements SerializerStrategy {
     private List<Company> readCompanySection(DataInputStream dis) throws IOException {
         List<Company> list = new ArrayList<>();
         readWithException(dis, o -> {
-            String companyName = ((DataInputStream) o).readUTF();
-            String website = ((DataInputStream) o).readUTF();
+            DataInputStream dataInputStream = (DataInputStream) o;
+            String companyName = dataInputStream.readUTF();
+            String website = dataInputStream.readUTF();
             list.add(new Company(companyName, website.isEmpty() ? null : website, readPeriods((DataInputStream) o)));
         });
         return list;
@@ -114,10 +116,11 @@ public class DataStreamSerializer implements SerializerStrategy {
     private List<Period> readPeriods(DataInputStream dis) throws IOException {
         List<Period> periods = new ArrayList<>();
         readWithException(dis, o -> {
-            LocalDate dateFrom = LocalDate.parse(((DataInputStream) o).readUTF(), FORMATTER);
-            LocalDate dateTo = LocalDate.parse(((DataInputStream) o).readUTF(), FORMATTER);
-            String title = ((DataInputStream) o).readUTF();
-            String description = ((DataInputStream) o).readUTF();
+            DataInputStream dataInputStream = (DataInputStream) o;
+            LocalDate dateFrom = LocalDate.parse(dataInputStream.readUTF(), FORMATTER);
+            LocalDate dateTo = LocalDate.parse(dataInputStream.readUTF(), FORMATTER);
+            String title = dataInputStream.readUTF();
+            String description = dataInputStream.readUTF();
             periods.add(new Period(dateFrom, dateTo, title, description.isEmpty() ? null : description));
         });
         return periods;
