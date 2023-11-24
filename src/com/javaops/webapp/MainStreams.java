@@ -13,9 +13,17 @@ public class MainStreams {
         integerList.add(1);
         integerList.add(6);
         integerList.add(3);
-        System.out.println(minValue(new int[]{1, 2, 3, 3, 2, 3}));
-        System.out.println(minValue(new int[]{9, 8}));
-        System.out.println(oddOrEven(integerList));
+
+        int[] array = new int[]{1, 2, 3, 3, 2, 3};
+        System.out.println("Have array: " + Arrays.toString(array));
+        System.out.println("Result minValue: " + minValue(array));
+
+        array = new int[]{9, 8};
+        System.out.println("Have array: " + Arrays.toString(array));
+        System.out.println("Result minValue: " + minValue(array));
+
+        System.out.println("Have list: " + integerList);
+        System.out.println("Result oddOrEven: " + oddOrEven(integerList));
     }
 
     private static int minValue(int[] values) {
