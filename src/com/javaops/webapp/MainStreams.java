@@ -3,6 +3,7 @@ package com.javaops.webapp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MainStreams {
@@ -27,20 +28,16 @@ public class MainStreams {
     }
 
     private static int minValue(int[] values) {
+        int identity = 0;
         return Arrays.stream(values)
                 .distinct()
                 .sorted()
-                .reduce((left, right) -> left * 10 + right)
-                .orElse(0);
+                .reduce(identity, ((left, right) -> left * 10 + right));
     }
 
     private static List<Integer> oddOrEven(List<Integer> integerList) {
-        return integerList.stream()
-                .collect(Collectors.partitioningBy(integer -> integer % 2 == 0))
-                .entrySet()
-                .stream()
-                .filter(booleanListEntry -> (integerList.stream().reduce(Integer::sum).orElse(0) % 2 == 0) == booleanListEntry.getKey())
-                .flatMap(el -> el.getValue().stream())
-                .toList();
+        Map<Boolean, List<Integer>> listMap = integerList.stream().collect(Collectors.partitioningBy(integer -> integer % 2 == 0));
+        boolean oddOrEvenSum = integerList.stream().reduce(Integer::sum).orElse(0) % 2 == 0;
+        return listMap.get(oddOrEvenSum);
     }
 }
