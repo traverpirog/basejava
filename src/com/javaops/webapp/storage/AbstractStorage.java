@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class AbstractStorage<T> implements Storage {
     protected static final Comparator<Resume> resumeComparator = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
     @Override
-    public final Resume get(String uuid, String fullName) {
+    public final Resume get(String uuid) {
         T searchKey = getExistingSearchKey(uuid);
         return getResume(searchKey);
     }
@@ -28,7 +28,7 @@ public abstract class AbstractStorage<T> implements Storage {
     }
 
     @Override
-    public final void delete(String uuid, String fullName) {
+    public final void delete(String uuid) {
         T searchKey = getExistingSearchKey(uuid);
         deleteResume(searchKey);
     }

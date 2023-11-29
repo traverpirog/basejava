@@ -84,13 +84,13 @@ public class ResumeTestData {
 
     public static Resume getResume(String fullName) {
         RESUME = new Resume(fullName);
-        addInfo(RESUME);
+        //addInfo(RESUME);
         return RESUME;
     }
 
     public static Resume getResume(String uuid, String fullName) {
         RESUME = new Resume(uuid, fullName);
-        addInfo(RESUME);
+        //addInfo(RESUME);
         return RESUME;
     }
 }

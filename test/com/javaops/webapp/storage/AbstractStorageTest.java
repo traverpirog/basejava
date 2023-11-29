@@ -1,5 +1,6 @@
 package com.javaops.webapp.storage;
 
+import com.javaops.webapp.Config;
 import com.javaops.webapp.ResumeTestData;
 import com.javaops.webapp.exception.ExistStorageException;
 import com.javaops.webapp.exception.NotExistStorageException;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractStorageTest {
     protected final Storage STORAGE;
-    protected static final File STORAGE_DIR = new File("C:\\Users\\Igor\\Desktop\\JavaOpsBaseJava\\basejava\\storage");
+    protected static final File STORAGE_DIR = Config.getInstance().getStorageDir();
     protected final String UUID = "uuid";
     protected final String FULL_NAME = "Иванов Иван Иванович";
     protected final String UUID1 = "uuid1";
@@ -68,9 +69,9 @@ public class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resume = STORAGE.get(UUID1, FULL_NAME_1);
+        Resume resume = STORAGE.get(UUID1);
         STORAGE.update(resume);
-        assertEquals(this.RESUME1, STORAGE.get(resume.getUuid(), resume.getFullName()));
+        assertEquals(this.RESUME1, STORAGE.get(resume.getUuid()));
     }
 
     @Test
@@ -80,14 +81,14 @@ public class AbstractStorageTest {
 
     @Test
     public void delete() {
-        STORAGE.delete(UUID1, FULL_NAME_1);
+        STORAGE.delete(UUID1);
         assertSize(2);
-        assertThrows(NotExistStorageException.class, () -> STORAGE.get(UUID1, FULL_NAME_1));
+        assertThrows(NotExistStorageException.class, () -> STORAGE.get(UUID1));
     }
 
     @Test
     public void deleteNotExist() {
-        assertThrows(NotExistStorageException.class, () -> STORAGE.delete(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST));
+        assertThrows(NotExistStorageException.class, () -> STORAGE.delete(UUID_NOT_EXIST));
     }
 
     @Test
@@ -99,7 +100,7 @@ public class AbstractStorageTest {
 
     @Test
     public void getNotExist() {
-        assertThrows(NotExistStorageException.class, () -> STORAGE.get(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST));
+        assertThrows(NotExistStorageException.class, () -> STORAGE.get(UUID_NOT_EXIST));
     }
 
     @Test
@@ -114,7 +115,7 @@ public class AbstractStorageTest {
     }
 
     private void assertGet(Resume resume) {
-        assertNotNull(STORAGE.get(resume.getUuid(), resume.getFullName()));
+        assertNotNull(STORAGE.get(resume.getUuid()));
     }
 
     private void assertSize(int size) {
