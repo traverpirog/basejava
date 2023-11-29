@@ -16,12 +16,13 @@ public class SqlHelper {
             throw new StorageException(e);
         }
     }
-    public static <T> T executeSave(ConnectionFactory connectionFactory, String command, SqlFunction<T> function) {
+
+    public static <T> void executeSave(ConnectionFactory connectionFactory, String command, String uuid, SqlFunction<T> function) {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(command)) {
-            return function.execute(preparedStatement);
+            function.execute(preparedStatement);
         } catch (SQLException e) {
-            throw new ExistStorageException("");
+            throw new ExistStorageException(uuid);
         }
     }
 }
