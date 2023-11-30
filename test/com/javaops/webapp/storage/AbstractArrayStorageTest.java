@@ -17,13 +17,13 @@ public class AbstractArrayStorageTest extends AbstractStorageTest{
         try {
             int STORAGE_LIMIT = AbstractArrayStorage.STORAGE_LIMIT;
             for (int i = 3; i < STORAGE_LIMIT; i++) {
-                STORAGE.save(ResumeTestData.getResume(FULL_NAME));
+                STORAGE.save(ResumeTestData.getResume(FULL_NAME_1));
             }
         } catch (StorageException e) {
             fail("Переполнение произошло раньше времени");
         }
         assertThrows(StorageException.class, () -> {
-            STORAGE.save(RESUME);
+            STORAGE.save(RESUME4);
         });
     }
 }

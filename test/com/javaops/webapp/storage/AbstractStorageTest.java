@@ -10,30 +10,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractStorageTest {
     protected final Storage STORAGE;
     protected static final File STORAGE_DIR = Config.getInstance().getStorageDir();
-    protected final String UUID = "uuid";
-    protected final String FULL_NAME = "Иванов Иван Иванович";
-    protected final String UUID1 = "uuid1";
-    protected final String FULL_NAME_1 = "Петров Петр Петрович";
-    protected final String UUID2 = "uuid2";
-    protected final String FULL_NAME_2 = "Владимиров Владимир Владимирович";
-    protected final String UUID3 = "uuid3";
-    protected final String FULL_NAME_3 = "Ибрагимов Ибрагим Ибрагимович";
+    protected final String UUID1 = String.valueOf(UUID.randomUUID());
+    protected final String FULL_NAME_1 = "Иванов Иван Иванович";
+    protected final String UUID2 = String.valueOf(UUID.randomUUID());
+    protected final String FULL_NAME_2 = "Петров Петр Петрович";
+    protected final String UUID3 = String.valueOf(UUID.randomUUID());
+    protected final String FULL_NAME_3 = "Владимиров Владимир Владимирович";
+    protected final String UUID4 = String.valueOf(UUID.randomUUID());
+    protected final String FULL_NAME_4 = "Ибрагимов Ибрагим Ибрагимович";
     protected final String UUID_NOT_EXIST = "dummy";
     protected final String FULL_NAME_NOT_EXIST = "Алексеев Алексей Алексеевич";
-    protected final Resume RESUME = ResumeTestData.getResume(UUID, FULL_NAME);
     protected final Resume RESUME1 = ResumeTestData.getResume(UUID1, FULL_NAME_1);
     protected final Resume RESUME2 = ResumeTestData.getResume(UUID2, FULL_NAME_2);
     protected final Resume RESUME3 = ResumeTestData.getResume(UUID3, FULL_NAME_3);
+    protected final Resume RESUME4 = ResumeTestData.getResume(UUID4, FULL_NAME_4);
     protected final List<Resume> EXPECTED = Arrays.asList(RESUME1, RESUME2, RESUME3);
 
     protected AbstractStorageTest(Storage storage) {
@@ -57,9 +55,9 @@ public class AbstractStorageTest {
 
     @Test
     public void save() {
-        STORAGE.save(RESUME);
+        STORAGE.save(RESUME4);
         assertSize(4);
-        assertGet(RESUME);
+        assertGet(RESUME4);
     }
 
     @Test

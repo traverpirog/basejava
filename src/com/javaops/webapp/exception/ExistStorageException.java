@@ -4,4 +4,7 @@ public class ExistStorageException extends StorageException{
     public ExistStorageException(String key) {
         super(key, "ERROR: Резюме " + key + " уже существует!");
     }
+    public ExistStorageException(Exception e) {
+        super(e);
+    }
 }
