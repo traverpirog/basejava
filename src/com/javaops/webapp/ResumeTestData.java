@@ -79,18 +79,18 @@ public class ResumeTestData {
 
     public static void addInfo(Resume resume) {
         CONTACTS.forEach(resume::addContact);
-        SECTIONS.forEach(resume::addSection);
+        //SECTIONS.forEach(resume::addSection);
     }
 
     public static Resume getResume(String fullName) {
         RESUME = new Resume(fullName);
-        //addInfo(RESUME);
+        addInfo(RESUME);
         return RESUME;
     }
 
     public static Resume getResume(String uuid, String fullName) {
         RESUME = new Resume(uuid, fullName);
-        //addInfo(RESUME);
+        addInfo(RESUME);
         return RESUME;
     }
 }
