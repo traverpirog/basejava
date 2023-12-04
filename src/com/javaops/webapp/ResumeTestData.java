@@ -58,7 +58,7 @@ public class ResumeTestData {
                 case HOME_PHONE -> CONTACTS.put(ContactType.HOME_PHONE, HOME_PHONE);
                 case SKYPE -> CONTACTS.put(ContactType.SKYPE, SKYPE);
                 case EMAIL -> CONTACTS.put(ContactType.EMAIL, EMAIL);
-                case LINKEDIN -> CONTACTS.put(ContactType.LINKEDIN, LINKEDIN);
+                //case LINKEDIN -> CONTACTS.put(ContactType.LINKEDIN, LINKEDIN);
                 case GITHUB -> CONTACTS.put(ContactType.GITHUB, GITHUB);
                 case STACKOVERFLOW -> CONTACTS.put(ContactType.STACKOVERFLOW, STACKOVERFLOW);
                 case WEBSITE -> CONTACTS.put(ContactType.WEBSITE, WEBSITE);
