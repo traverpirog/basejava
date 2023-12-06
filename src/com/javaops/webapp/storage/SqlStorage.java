@@ -30,7 +30,7 @@ public class SqlStorage implements Storage {
                 preparedStatement.setString(2, r.getFullName());
                 preparedStatement.execute();
             }
-            executeBatch(connection, r);
+            writeContacts(connection, r);
             return null;
         });
     }
@@ -46,7 +46,7 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(r.getUuid());
                 }
             }
-            executeBatch(connection, r);
+            writeContacts(connection, r);
             return null;
         });
     }
@@ -112,52 +112,27 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private void executeBatch(Connection connection, Resume r) throws SQLException {
-        for (Map.Entry<ContactType, String> entry : r.getContacts().entrySet()) {
-            if (entry.getValue().isEmpty()) {
-                deleteContact(connection, entry.getKey().name(), r.getUuid());
-            } else if (!isExistContact(connection, entry.getKey().name(), r.getUuid())) {
-                saveContact(connection, entry.getKey().name(), entry.getValue(), r.getUuid());
-            } else {
-                try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE contact c SET value = ? WHERE c.resume_uuid = ? AND c.type = ?")) {
-                    preparedStatement.setString(1, entry.getValue());
-                    preparedStatement.setString(2, r.getUuid());
-                    preparedStatement.setString(3, entry.getKey().name());
-                    preparedStatement.executeUpdate();
-                }
-            }
-
-        }
-    }
-
-    private void deleteContact(Connection connection, String type, String uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM contact WHERE type = ? AND resume_uuid = ?")) {
-            preparedStatement.setString(1, type);
-            preparedStatement.setString(2, uuid);
+    private void writeContacts(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid = ?")) {
+            preparedStatement.setString(1, r.getUuid());
             preparedStatement.executeUpdate();
         }
-    }
-
-    private boolean isExistContact(Connection connection, String type, String uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM contact WHERE type = ? AND resume_uuid = ?")) {
-            preparedStatement.setString(1, type);
-            preparedStatement.setString(2, uuid);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-        }
-    }
-
-    private void saveContact(Connection connection, String type, String value, String uuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO contact (type, value, resume_uuid) VALUES (?,?,?)")) {
-            preparedStatement.setString(1, type);
-            preparedStatement.setString(2, value);
-            preparedStatement.setString(3, uuid);
-            preparedStatement.executeUpdate();
+            for (Map.Entry<ContactType, String> entry : r.getContacts().entrySet()) {
+                preparedStatement.setString(1, entry.getKey().name());
+                preparedStatement.setString(2, entry.getValue());
+                preparedStatement.setString(3, r.getUuid());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
         }
     }
 
     private void addContactToResume(ResultSet resultSet, Resume resume) throws SQLException {
-        resume.addContact(ContactType.valueOf(resultSet.getString("type")),
-                resultSet.getString("value"));
+        String type = resultSet.getString("type");
+        String value = resultSet.getString("value");
+        if (type != null && value != null) {
+            resume.addContact(ContactType.valueOf(type), value);
+        }
     }
 }
