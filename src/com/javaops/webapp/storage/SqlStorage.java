@@ -30,7 +30,6 @@ public class SqlStorage implements Storage {
                 preparedStatement.setString(2, r.getFullName());
                 preparedStatement.execute();
             }
-            clearContactsAndSection(connection, r);
             writeContacts(connection, r);
             writeSections(connection, r);
             return null;
@@ -130,10 +129,10 @@ public class SqlStorage implements Storage {
 
     private void clearContactsAndSection(Connection connection, Resume r) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid = ?;" +
-                                                                                  " DELETE FROM section WHERE resume_uuid = ?")) {
+                " DELETE FROM section WHERE resume_uuid = ?")) {
             preparedStatement.setString(1, r.getUuid());
             preparedStatement.setString(2, r.getUuid());
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
         }
     }
 
@@ -172,11 +171,7 @@ public class SqlStorage implements Storage {
 
     private void insertListSection(PreparedStatement preparedStatement, SectionType type, ListSection value, Resume r) throws SQLException {
         preparedStatement.setString(1, type.name());
-        StringBuilder sb = new StringBuilder();
-        for (String text : value.getList()) {
-            sb.append(text).append("\n");
-        }
-        preparedStatement.setString(2, String.valueOf(sb));
+        preparedStatement.setString(2, String.join("\n", value.getList()));
         preparedStatement.setString(3, r.getUuid());
         preparedStatement.addBatch();
     }

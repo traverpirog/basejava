@@ -1,8 +1,9 @@
 package com.javaops.webapp.web;
 
-import com.javaops.webapp.Config;
 import com.javaops.webapp.model.Resume;
+import com.javaops.webapp.storage.SqlStorage;
 import com.javaops.webapp.storage.Storage;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +12,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ResumeServlet extends HttpServlet {
-    private final Storage RESUMES_STORAGE = Config.getInstance().getStorage();
+    private Storage storage;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        storage = new SqlStorage(getServletContext().getInitParameter("db.url"),
+                getServletContext().getInitParameter("db.username"),
+                getServletContext().getInitParameter("db.password"));
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,10 +51,10 @@ public class ResumeServlet extends HttpServlet {
                 .append("</thead>")
                 .append("<tbody>");
         if (uuid != null) {
-            Resume resume = RESUMES_STORAGE.get(uuid);
+            Resume resume = storage.get(uuid);
             generateTableRow(html, resume);
         } else {
-            for (Resume resume : RESUMES_STORAGE.getAllSorted()) {
+            for (Resume resume : storage.getAllSorted()) {
                 generateTableRow(html, resume);
             }
         }
@@ -54,8 +63,8 @@ public class ResumeServlet extends HttpServlet {
         return String.valueOf(html);
     }
 
-    private StringBuilder generateTableRow(StringBuilder html, Resume resume) {
-        return html.append("<tr>")
+    private void generateTableRow(StringBuilder html, Resume resume) {
+        html.append("<tr>")
                 .append("<td>")
                 .append(resume.getUuid())
                 .append("</td>")
