@@ -1,7 +1,7 @@
 package com.javaops.webapp.web;
 
+import com.javaops.webapp.Config;
 import com.javaops.webapp.model.Resume;
-import com.javaops.webapp.storage.SqlStorage;
 import com.javaops.webapp.storage.Storage;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -17,9 +17,7 @@ public class ResumeServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = new SqlStorage(getServletContext().getInitParameter("db.url"),
-                getServletContext().getInitParameter("db.username"),
-                getServletContext().getInitParameter("db.password"));
+        storage = Config.getInstance().getStorage();
     }
 
     @Override
