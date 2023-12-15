@@ -1,7 +1,7 @@
 package com.javaops.webapp.web;
 
 import com.javaops.webapp.Config;
-import com.javaops.webapp.model.Resume;
+import com.javaops.webapp.model.*;
 import com.javaops.webapp.storage.Storage;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -22,53 +23,87 @@ public class ResumeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
-        response.getWriter().write(generateHtmlTable(uuid));
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
+        }
+        Resume resume;
+        StringBuilder requestPath = new StringBuilder("/WEB-INF/jsp/");
+        switch (action) {
+            case "delete":
+                storage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "view":
+            case "edit":
+                resume = storage.get(uuid);
+                requestPath.append(action).append(".jsp");
+                break;
+            case "create":
+                resume = new Resume("");
+                requestPath.append("edit").append(".jsp");
+                break;
+            default:
+                throw new IllegalArgumentException("Action " + action + " is illegal");
+        }
+        request.setAttribute("resume", resume);
+        request.getRequestDispatcher(requestPath.toString()).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
-    private String generateHtmlTable(String uuid) {
-        StringBuilder html = new StringBuilder();
-        html
-                .append("<link rel=\"stylesheet\" href=\"css/styles.css\">")
-                .append("<table>")
-                .append("<thead>")
-                .append("<tr>")
-                .append("<th>").append("UUID")
-                .append("</th>")
-                .append("<th>").append("FULL_NAME")
-                .append("</th>")
-                .append("</tr>")
-                .append("</thead>")
-                .append("<tbody>");
-        if (uuid != null) {
-            Resume resume = storage.get(uuid);
-            generateTableRow(html, resume);
-        } else {
-            for (Resume resume : storage.getAllSorted()) {
-                generateTableRow(html, resume);
-            }
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
         }
-        html.append("</tbody>")
-                .append("</table>");
-        return String.valueOf(html);
-    }
-
-    private void generateTableRow(StringBuilder html, Resume resume) {
-        html.append("<tr>")
-                .append("<td>")
-                .append(resume.getUuid())
-                .append("</td>")
-                .append("<td>")
-                .append(resume.getFullName())
-                .append("</td>")
-                .append("</tr>");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume resume;
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            if (action.equals("create")) {
+                resume = new Resume(uuid, fullName);
+            } else {
+                resume = storage.get(uuid);
+                resume.setFullName(fullName);
+            }
+            for (ContactType type : ContactType.values()) {
+                String value = request.getParameter(type.name());
+                if (value != null && !value.trim().isEmpty()) {
+                    resume.addContact(type, value.trim());
+                } else {
+                    resume.getContacts().remove(type);
+                }
+            }
+            for (SectionType type : SectionType.values()) {
+                String value = request.getParameter(type.name());
+                if (value != null && !value.trim().isEmpty()) {
+                    switch (type) {
+                        case PERSONAL, OBJECTIVE -> resume.addSection(type, new TextSection(value.trim()));
+                        case ACHIEVEMENT, QUALIFICATIONS ->
+                                resume.addSection(type, new ListSection(Arrays.stream(value.trim().split("\n")).toList()));
+                    }
+                } else {
+                    resume.getSections().remove(type);
+                }
+            }
+            switch (action) {
+                case "create" -> {
+                    storage.save(resume);
+                    response.sendRedirect("resume?uuid=" + resume.getUuid() + "&action=edit");
+                }
+                case "update" -> {
+                    storage.update(resume);
+                    response.sendRedirect("resume");
+                }
+            }
+        } else {
+            response.sendRedirect("resume");
+        }
     }
 }
