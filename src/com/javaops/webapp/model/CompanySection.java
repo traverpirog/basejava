@@ -42,8 +42,6 @@ public class CompanySection extends AbstractSection {
 
     @Override
     public String toString() {
-        return "CompanySection{" +
-                "companies=" + companies +
-                '}';
+        return companies.toString();
     }
 }

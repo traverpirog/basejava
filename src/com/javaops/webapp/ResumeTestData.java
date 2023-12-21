@@ -71,8 +71,8 @@ public class ResumeTestData {
                 case OBJECTIVE -> SECTIONS.put(SectionType.OBJECTIVE, new TextSection(OBJECTIVE));
                 case ACHIEVEMENT -> SECTIONS.put(SectionType.ACHIEVEMENT, new ListSection(ACHIEVEMENT));
                 case QUALIFICATIONS -> SECTIONS.put(SectionType.QUALIFICATIONS, new ListSection(QUALIFICATIONS));
-                //case EXPERIENCE -> SECTIONS.put(SectionType.EXPERIENCE, new CompanySection(COMPANIES));
-                //case EDUCATION -> SECTIONS.put(SectionType.EDUCATION, new CompanySection(COMPANIES));
+                case EXPERIENCE -> SECTIONS.put(SectionType.EXPERIENCE, new CompanySection(COMPANIES));
+                case EDUCATION -> SECTIONS.put(SectionType.EDUCATION, new CompanySection(COMPANIES));
             }
         }
     }

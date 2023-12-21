@@ -1,3 +1,4 @@
+<%@ page import="com.javaops.webapp.model.Company" %>
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <jsp:useBean id="resume" type="com.javaops.webapp.model.Resume" scope="request"/>
@@ -45,14 +46,49 @@
                     </button>
                     <div class="accordion-item__content">
                         <c:forEach var="sectionEntry" items="${resume.sections}">
-                            <jsp:useBean id="sectionEntry"
-                                         type="java.util.Map.Entry<com.javaops.webapp.model.SectionType, com.javaops.webapp.model.AbstractSection>"/>
-                            <div>
-                                <h3><%= sectionEntry.getKey().getTitle() %>
-                                </h3>
-                                <p><%= sectionEntry.getValue() %>
-                                </p>
-                            </div>
+                            <jsp:useBean id="sectionEntry" type="java.util.Map.Entry<com.javaops.webapp.model.SectionType, com.javaops.webapp.model.AbstractSection>"/>
+                            <c:choose>
+                                <c:when test="${sectionEntry.getKey().name() == 'EXPERIENCE' || sectionEntry.getKey().name() == 'EDUCATION'}">
+                                    <div>
+                                        <h3><%= sectionEntry.getKey().getTitle() %></h3>
+                                        <c:forEach var="company" items="${sectionEntry.value.companies}">
+                                            <jsp:useBean id="company"
+                                                         type="com.javaops.webapp.model.Company"/>
+                                            <div class="company">
+                                                <c:choose>
+                                                    <c:when test="${not empty company.website}">
+                                                        <h4><a href="${company.website}" target="_blank" rel="nofollow">${company.name}</a></h4>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <h4>${company.name}</h4>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <c:forEach items="${company.periods}" var="period">
+                                                    <jsp:useBean id="period" type="com.javaops.webapp.model.Period" />
+                                                    <div class="company-period">
+                                                        <div class="company-period__date">
+                                                            <div class="company-period__date-from">${period.dateFrom}</div>
+                                                            <div class="company-period__date-to">${period.dateTo}</div>
+                                                        </div>
+                                                        <div class="company-period__content">
+                                                            <h5 class="company-period__title">${period.title}</h5>
+                                                            <div class="company-period__description">${period.description}</div>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div>
+                                        <h3><%= sectionEntry.getKey().getTitle() %>
+                                        </h3>
+                                        <p><%= sectionEntry.getValue() %>
+                                        </p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </div>
                 </div>

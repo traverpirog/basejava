@@ -10,7 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -81,12 +83,18 @@ public class ResumeServlet extends HttpServlet {
                 }
             }
             for (SectionType type : SectionType.values()) {
-                String value = request.getParameter(type.name());
-                if (value != null && !value.trim().isEmpty()) {
+                String[] values = request.getParameterValues(type.name());
+                if (values != null && values.length > 0) {
                     switch (type) {
-                        case PERSONAL, OBJECTIVE -> resume.addSection(type, new TextSection(value.trim()));
+                        case PERSONAL, OBJECTIVE -> {
+                            resume.addSection(type, new TextSection(values[0].trim()));
+                        }
                         case ACHIEVEMENT, QUALIFICATIONS ->
-                                resume.addSection(type, new ListSection(Arrays.stream(value.trim().split("\n")).toList()));
+                                resume.addSection(type, new ListSection(Arrays.stream(values[0].trim().split("\n")).toList()));
+                        case EDUCATION, EXPERIENCE -> {
+                            List<Company> companies = new ArrayList<>();
+                            resume.addSection(type, new CompanySection(companies)); // Создание и добавление CompanySection в resume
+                        }
                     }
                 } else {
                     resume.getSections().remove(type);

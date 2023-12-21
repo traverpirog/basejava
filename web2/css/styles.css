@@ -80,6 +80,7 @@ svg {
 
 .form-label__caption {
     font-weight: 600;
+    margin: 0;
 }
 
 .form-input {
@@ -139,4 +140,62 @@ svg {
     border: 1px solid rgb(var(--dark), 0.1);
     border-bottom-right-radius: 12px;
     border-bottom-left-radius: 12px;
+}
+
+.company-period {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.company-period__title {
+    margin: 0;
+}
+
+.company-period__date {
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    gap: 12px;
+}
+
+.company {
+    padding: 16px;
+    border: 1px solid rgb(var(--dark), 0.1);
+    margin-bottom: 12px;
+    border-radius: 8px;
+}
+
+.company-period:not(:last-of-type) {
+    border-bottom: 1px solid rgb(var(--dark), 0.1);
+    padding-bottom: 24px;
+}
+
+.company h4 {
+    margin-top: 0;
+}
+
+.company-period__description {
+    font-size: 12px;
+}
+
+.company-period__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-period {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.form-period textarea {
+    width: 100%;
+}
+
+.form-period .form-input {
+    flex: 1 0 auto;
 }

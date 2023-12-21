@@ -72,7 +72,7 @@ public class Company implements Serializable {
 
     @Override
     public String toString() {
-        return "CompanySection{" +
+        return "Company{" +
                 "name='" + name + '\'' +
                 ", website='" + website + '\'' +
                 ", periods=" + periods +

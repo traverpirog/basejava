@@ -5,6 +5,7 @@ import com.javaops.webapp.model.*;
 import com.javaops.webapp.sql.CheckedSqlConsumer;
 import com.javaops.webapp.sql.ConnectionFactory;
 import com.javaops.webapp.sql.SqlHelper;
+import com.javaops.webapp.util.JsonParser;
 
 import java.sql.*;
 import java.util.*;
@@ -156,30 +157,15 @@ public class SqlStorage implements Storage {
     private void writeSections(Connection connection, Resume r) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO section (type, value, resume_uuid) VALUES (?,?,?)")) {
             for (Map.Entry<SectionType, AbstractSection> entry : r.getSections().entrySet()) {
-                switch (entry.getKey()) {
-                    case PERSONAL, OBJECTIVE ->
-                            insertTextSection(preparedStatement, entry.getKey(), (TextSection) entry.getValue(), r);
-                    case ACHIEVEMENT, QUALIFICATIONS ->
-                            insertListSection(preparedStatement, entry.getKey(), (ListSection) entry.getValue(), r);
-                }
+                preparedStatement.setString(1, entry.getKey().name());
+                preparedStatement.setString(2, JsonParser.write(entry.getValue(), AbstractSection.class));
+                preparedStatement.setString(3, r.getUuid());
+                preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
         }
     }
 
-    private void insertTextSection(PreparedStatement preparedStatement, SectionType type, TextSection value, Resume r) throws SQLException {
-        preparedStatement.setString(1, type.name());
-        preparedStatement.setString(2, value.getText());
-        preparedStatement.setString(3, r.getUuid());
-        preparedStatement.addBatch();
-    }
-
-    private void insertListSection(PreparedStatement preparedStatement, SectionType type, ListSection value, Resume r) throws SQLException {
-        preparedStatement.setString(1, type.name());
-        preparedStatement.setString(2, String.join("\n", value.getList()));
-        preparedStatement.setString(3, r.getUuid());
-        preparedStatement.addBatch();
-    }
 
     private void addContactToResume(ResultSet resultSet, Resume resume) throws SQLException {
         String type = resultSet.getString("type");
@@ -193,18 +179,11 @@ public class SqlStorage implements Storage {
         String type = resultSet.getString("type");
         String value = resultSet.getString("value");
         if (type != null && value != null) {
-            SectionType sectionType = SectionType.valueOf(type);
-            switch (sectionType) {
-                case PERSONAL, OBJECTIVE -> resume.addSection(sectionType, new TextSection(value));
-                case ACHIEVEMENT, QUALIFICATIONS -> {
-                    List<String> list = Arrays.stream(value.split("\n")).toList();
-                    resume.addSection(sectionType, new ListSection(list));
-                }
-            }
+            resume.addSection(SectionType.valueOf(type), JsonParser.read(value, AbstractSection.class));
         }
     }
 
-    private <T> void setDataFromResultSet(PreparedStatement preparedStatement, CheckedSqlConsumer<ResultSet> consumer) throws SQLException {
+    private void setDataFromResultSet(PreparedStatement preparedStatement, CheckedSqlConsumer<ResultSet> consumer) throws SQLException {
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             consumer.accept(resultSet);
