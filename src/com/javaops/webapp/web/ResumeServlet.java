@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,18 +84,15 @@ public class ResumeServlet extends HttpServlet {
                 }
             }
             for (SectionType type : SectionType.values()) {
+                String value = request.getParameter(type.name());
                 String[] values = request.getParameterValues(type.name());
-                if (values != null && values.length > 0) {
+                if (value != null && !value.trim().isEmpty() && values.length > 0) {
                     switch (type) {
-                        case PERSONAL, OBJECTIVE -> {
-                            resume.addSection(type, new TextSection(values[0].trim()));
-                        }
+                        case PERSONAL, OBJECTIVE -> resume.addSection(type, new TextSection(value.trim()));
                         case ACHIEVEMENT, QUALIFICATIONS ->
-                                resume.addSection(type, new ListSection(Arrays.stream(values[0].trim().split("\n")).toList()));
-                        case EDUCATION, EXPERIENCE -> {
-                            List<Company> companies = new ArrayList<>();
-                            resume.addSection(type, new CompanySection(companies)); // Создание и добавление CompanySection в resume
-                        }
+                                resume.addSection(type, new ListSection(Arrays.stream(value.trim().split("\\n")).toList()));
+                        case EXPERIENCE, EDUCATION ->
+                                resume.addSection(type, new CompanySection(addCompanies(request, values, type)));
                     }
                 } else {
                     resume.getSections().remove(type);
@@ -105,7 +103,7 @@ public class ResumeServlet extends HttpServlet {
                     storage.save(resume);
                     response.sendRedirect("resume?uuid=" + resume.getUuid() + "&action=edit");
                 }
-                case "update" -> {
+                case "edit" -> {
                     storage.update(resume);
                     response.sendRedirect("resume");
                 }
@@ -113,5 +111,33 @@ public class ResumeServlet extends HttpServlet {
         } else {
             response.sendRedirect("resume");
         }
+    }
+
+    private List<Period> addPeriods(HttpServletRequest request, String[] titles, SectionType type, int index) {
+        List<Period> periods = new ArrayList<>();
+        if (titles != null) {
+            for (String title : titles) {
+                if (!title.trim().isEmpty()) {
+                    String dateFrom = request.getParameter(type.name() + index + "dateFrom");
+                    String dateTo = request.getParameter(type.name() + index + "dateTo");
+                    String description = request.getParameter(type.name() + index + "description");
+                    periods.add(new Period(LocalDate.parse(dateFrom), LocalDate.parse(dateTo), title, description));
+                }
+            }
+        }
+        return periods;
+    }
+
+    private List<Company> addCompanies(HttpServletRequest request, String[] values, SectionType type) {
+        List<Company> companies = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            String name = values[i];
+            if (name != null && !name.trim().isEmpty()) {
+                String website = request.getParameter(type.name() + "website");
+                String[] periodsTitle = request.getParameterValues(type.name() + i + "title");
+                companies.add(new Company(name, website, addPeriods(request, periodsTitle, type, i)));
+            }
+        }
+        return companies;
     }
 }

@@ -40,18 +40,18 @@
                             <c:choose>
                                 <c:when test="${not empty section}">
                                     <jsp:useBean id="section" type="com.javaops.webapp.model.CompanySection"/>
-                                    <c:set var="positionCompany" value="0"/>
                                     <div class="form-label__list form-label__list--company">
+                                        <c:set var="counter" value="0" />
                                         <c:forEach var="company" items="${section.companies}">
                                             <jsp:useBean id="company" type="com.javaops.webapp.model.Company"/>
                                             <div class="form-label form-label--company">
                                                 <input type="text" class="form-input"
-                                                       name="${type.name()}${positionCompany}name"
+                                                       name="${type.name()}"
                                                        value="${company.name}"
-                                                       placeholder="Название компании" required/>
+                                                       placeholder="Название компании"/>
                                                 <input type="text" class="form-input"
-                                                       name="${type.name()}${positionCompany}"
-                                                       value="${company.website}website"
+                                                       name="${type.name()}website"
+                                                       value="${company.website}"
                                                        placeholder="Ссылка на сайт"/>
                                                 <div class="form-label__list form-label__list--period">
                                                     <c:forEach var="period" items="${company.periods}">
@@ -59,82 +59,108 @@
                                                             <jsp:useBean id="period"
                                                                          type="com.javaops.webapp.model.Period"/>
                                                             <input type="date" class="form-input"
-                                                                   name="${type.name()}${positionCompany}dateFrom"
+                                                                   name="${type.name()}${counter}dateFrom"
                                                                    value="${period.dateFrom}"
-                                                                   placeholder="Начало, ДД.ММ.ГГГГ" required/>
+                                                                   placeholder="Начало, ДД.ММ.ГГГГ"/>
                                                             <input type="date" class="form-input"
-                                                                   name="${type.name()}${positionCompany}dateTo"
+                                                                   name="${type.name()}${counter}dateTo"
                                                                    value="${period.dateTo}"
-                                                                   placeholder="Конец, ДД.ММ.ГГГГ" required/>
+                                                                   placeholder="Конец, ДД.ММ.ГГГГ"/>
                                                             <input type="text" class="form-input"
-                                                                   name="${type.name()}${positionCompany}title"
+                                                                   name="${type.name()}${counter}title"
                                                                    value="${period.title}" placeholder="Заголовок"
-                                                                   required/>
+                                                            />
                                                             <textarea
-                                                                    name="${type.name()}${positionCompany}description"
+                                                                    name="${type.name()}${counter}description"
                                                                     class="form-input form-input--textarea">${period.description}</textarea>
                                                         </div>
+                                                        <hr style="margin: 24px 0">
                                                     </c:forEach>
-                                                    <button type="button" class="button button--border add-period-js"
-                                                            data-company-id="${positionCompany}"
-                                                            data-type="${type.name()}">
-                                                        Добавить период
-                                                    </button>
+                                                    <div class="form-period">
+                                                        <input type="date" class="form-input"
+                                                               name="${type.name()}${counter}dateFrom"
+                                                               value="${period.dateFrom}"
+                                                               placeholder="Начало, ДД.ММ.ГГГГ"/>
+                                                        <input type="date" class="form-input"
+                                                               name="${type.name()}${counter}dateTo"
+                                                               value="${period.dateTo}"
+                                                               placeholder="Конец, ДД.ММ.ГГГГ"/>
+                                                        <input type="text" class="form-input"
+                                                               name="${type.name()}${counter}title"
+                                                               value="${period.title}" placeholder="Заголовок"
+                                                        />
+                                                        <textarea
+                                                                name="${type.name()}${counter}description"
+                                                                class="form-input form-input--textarea">${period.description}</textarea>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <hr style="margin: 48px 0">
-                                            <c:set var="positionCompany" value="${positionCompany + 1}"/>
+                                            <c:set var="counter" value="${counter + 1}" />
                                         </c:forEach>
-                                        <button type="button" class="button add-company-js"
-                                                data-company-id="${positionCompany}"
-                                                data-period-id="${positionPeriod}" data-type="${type.name()}">Добавить
-                                            компанию
-                                        </button>
+                                        <hr style="margin: 48px 0">
+                                        <div class="form-label__list form-label__list--company">
+                                            <div class="form-label form-label--company">
+                                                <input type="text" class="form-input"
+                                                       name="${type.name()}" value="${company.name}"
+                                                       placeholder="Название компании"/>
+                                                <input type="text" class="form-input"
+                                                       name="${type.name()}website"
+                                                       value="${company.website}"
+                                                       placeholder="Ссылка на сайт"/>
+                                                <div class="form-label__list form-label__list--period">
+                                                    <div class="form-period">
+                                                        <input type="date" class="form-input"
+                                                               name="${type.name()}${counter}dateFrom"
+                                                               value="${period.dateFrom}"
+                                                               placeholder="Начало, ДД.ММ.ГГГГ"/>
+                                                        <input type="date" class="form-input"
+                                                               name="${type.name()}${counter}dateTo"
+                                                               value="${period.dateTo}"
+                                                               placeholder="Конец, ДД.ММ.ГГГГ"/>
+                                                        <input type="text" class="form-input"
+                                                               name="${type.name()}${counter}title"
+                                                               value="${period.title}" placeholder="Заголовок"
+                                                        />
+                                                        <textarea
+                                                                name="${type.name()}${counter}description"
+                                                                class="form-input form-input--textarea">${period.description}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="form-label__list form-label__list--company">
                                         <div class="form-label form-label--company">
                                             <input type="text" class="form-input"
-                                                   name="${type.name()}[]" value="${company.name}"
-                                                   placeholder="Название компании" />
+                                                   name="${type.name()}" value="${company.name}"
+                                                   placeholder="Название компании"/>
                                             <input type="text" class="form-input"
-                                                   name="${type.name()}[]"
+                                                   name="${type.name()}website"
                                                    value="${company.website}"
                                                    placeholder="Ссылка на сайт"/>
                                             <div class="form-label__list form-label__list--period">
                                                 <div class="form-period">
                                                     <input type="date" class="form-input"
-                                                           name="${type.name()}[]"
+                                                           name="${type.name()}0dateFrom"
                                                            value="${period.dateFrom}"
-                                                           placeholder="Начало, ДД.ММ.ГГГГ" />
+                                                           placeholder="Начало, ДД.ММ.ГГГГ"/>
                                                     <input type="date" class="form-input"
-                                                           name="${type.name()}[]"
+                                                           name="${type.name()}0dateTo"
                                                            value="${period.dateTo}"
-                                                           placeholder="Конец, ДД.ММ.ГГГГ" />
+                                                           placeholder="Конец, ДД.ММ.ГГГГ"/>
                                                     <input type="text" class="form-input"
-                                                           name="${type.name()}[]"
+                                                           name="${type.name()}0title"
                                                            value="${period.title}" placeholder="Заголовок"
-                                                           />
+                                                    />
                                                     <textarea
-                                                            name="${type.name()}[]"
+                                                            name="${type.name()}0description"
                                                             class="form-input form-input--textarea">${period.description}</textarea>
-                                                    <c:set var="positionPeriod" value="${positionPeriod + 1}"/>
                                                 </div>
-                                                <button type="button" class="button button--border add-period-js"
-                                                        data-period-id="${positionPeriod}"
-                                                        data-company-id="${positionCompany}" data-type="${type.name()}">
-                                                    Добавить период
-                                                </button>
                                             </div>
                                         </div>
                                         <hr style="margin: 48px 0">
-                                        <c:set var="positionCompany" value="${positionCompany + 1}"/>
-                                        <button type="button" class="button add-company-js"
-                                                data-company-id="${positionCompany}"
-                                                data-period-id="${positionPeriod}" data-type="${type.name()}">Добавить
-                                            компанию
-                                        </button>
                                     </div>
                                 </c:otherwise>
                             </c:choose>

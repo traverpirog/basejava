@@ -18,32 +18,11 @@ const handleAddCompany = (e) => {
     const formInputs = companyItemNew.querySelectorAll('.form-input');
     formInputs.forEach(input => input.value = '');
     companyWrapper.insertBefore(companyItemNew, e.currentTarget);
-
-    // После добавления компании, повторно настраиваем обработчики для периодов
-    const periodHandlers = companyItemNew.querySelectorAll('.add-period-js');
-    periodHandlers.forEach(periodHandler => {
-        periodHandler.addEventListener('click', handleAddPeriod);
-    });
 };
-
-const handleAddPeriod = (e) => {
-    const periodWrapper = e.currentTarget.parentElement;
-    const periodItem = periodWrapper.querySelector('.form-period');
-    const periodItemNew = periodItem.cloneNode(true);
-    const formInputs = periodItemNew.querySelectorAll('.form-input');
-    formInputs.forEach(input => input.value = '');
-    periodWrapper.insertBefore(periodItemNew, e.currentTarget);
-};
-
 const formListCompanies = document.querySelectorAll('.form-label__list--company');
 formListCompanies.forEach(companyWrapper => {
     const companyHandler = companyWrapper.querySelector('.add-company-js');
     companyHandler.addEventListener('click', handleAddCompany);
-
-    const periodHandlers = companyWrapper.querySelectorAll('.add-period-js');
-    periodHandlers.forEach(periodHandler => {
-        periodHandler.addEventListener('click', handleAddPeriod);
-    });
 });
 
 /*
