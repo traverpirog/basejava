@@ -1,5 +1,6 @@
 <%@ page import="com.javaops.webapp.model.Company" %>
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@page import="java.time.LocalDate"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <jsp:useBean id="resume" type="com.javaops.webapp.model.Resume" scope="request"/>
 <jsp:include page="/WEB-INF/fragments/header.jsp">
@@ -68,7 +69,12 @@
                                                     <div class="company-period">
                                                         <div class="company-period__date">
                                                             <div class="company-period__date-from">${period.dateFrom}</div>
-                                                            <div class="company-period__date-to">${period.dateTo}</div>
+                                                            <div class="company-period__date-to">
+                                                                <c:choose>
+                                                                    <c:when test="${period.dateTo.isAfter(LocalDate.now())}">Сейчас</c:when>
+                                                                    <c:otherwise>${period.dateTo}</c:otherwise>
+                                                                </c:choose>
+                                                            </div>
                                                         </div>
                                                         <div class="company-period__content">
                                                             <h5 class="company-period__title">${period.title}</h5>
